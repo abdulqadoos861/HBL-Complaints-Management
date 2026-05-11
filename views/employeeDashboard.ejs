@@ -1,153 +1,491 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>Employee Dashboard | HBL</title>
+
   <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: #f4f7f6; color: #333; }
-    .container { max-width: 1200px; margin: auto; }
-    
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .header h1 { margin: 0; color: #008269; font-size: 1.5rem; }
-    .dept-badge { background: #e8f5e9; color: #2e7d32; padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; border: 1px solid #2e7d32; }
 
-    .search-bar { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 15px; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .search-bar input { flex-grow: 1; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; }
-    .search-bar button { padding: 12px 25px; background: #008269; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-    .search-bar button:hover { background: #006a55; }
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
 
-    .table-container { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; background: #f9f9f9; padding: 15px; font-size: 0.85rem; text-transform: uppercase; color: #666; border-bottom: 2px solid #eee; }
-    td { padding: 15px; border-bottom: 1px solid #eee; font-size: 0.95rem; vertical-align: middle; }
-    tr:hover { background: #fafafa; }
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f4f7f6;
+      padding:20px;
+      color:#333;
+    }
 
-    .priority-pill { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
-    .priority-Critical { background: #ffebee; color: #c62828; }
-    .priority-High { background: #fff3e0; color: #ef6c00; }
-    .priority-Medium { background: #e3f2fd; color: #1565c0; }
-    .priority-Low { background: #f1f8e9; color: #33691e; }
+    .container{
+      max-width:1200px;
+      margin:auto;
+    }
 
-    .status-group { line-height: 1.4; }
-    .sub-text { color: #888; font-size: 0.85rem; }
-    
-    .view-link { color: #008269; text-decoration: none; font-weight: bold; }
-    .view-link:hover { text-decoration: underline; }
+    .header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:30px;
+      background:white;
+      padding:20px;
+      border-radius:10px;
+      box-shadow:0 2px 8px rgba(0,0,0,.05);
+    }
 
-    #loading { text-align: center; padding: 50px; color: #666; font-style: italic; }
-    #empty { text-align: center; padding: 50px; color: #666; display: none; }
+    .header h1{
+      color:#008269;
+      margin-bottom:5px;
+    }
+
+    .dept-badge{
+      background:#e8f5e9;
+      color:#2e7d32;
+      padding:6px 14px;
+      border-radius:20px;
+      font-size:.85rem;
+      font-weight:bold;
+      border:1px solid #2e7d32;
+    }
+
+    .view-link{
+      text-decoration:none;
+      color:#008269;
+      font-weight:bold;
+    }
+
+    .search-bar{
+      background:white;
+      padding:20px;
+      border-radius:10px;
+      margin-bottom:20px;
+      display:flex;
+      gap:15px;
+      box-shadow:0 2px 8px rgba(0,0,0,.05);
+    }
+
+    .search-bar input{
+      flex:1;
+      padding:12px;
+      border:1px solid #ccc;
+      border-radius:6px;
+      font-size:1rem;
+    }
+
+    .search-bar button{
+      background:#008269;
+      color:white;
+      border:none;
+      padding:12px 25px;
+      border-radius:6px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .search-bar button:hover{
+      background:#006a55;
+    }
+
+    .table-container{
+      background:white;
+      border-radius:10px;
+      overflow:hidden;
+      box-shadow:0 2px 8px rgba(0,0,0,.05);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+
+    thead{
+      background:#f8f9fa;
+    }
+
+    th{
+      text-align:left;
+      padding:16px;
+      font-size:.85rem;
+      color:#666;
+      text-transform:uppercase;
+      border-bottom:2px solid #eee;
+    }
+
+    td{
+      padding:16px;
+      border-bottom:1px solid #eee;
+      vertical-align:middle;
+      font-size:.95rem;
+    }
+
+    tr:hover{
+      background:#fafafa;
+    }
+
+    .complaint-number{
+      font-weight:bold;
+      color:#008269;
+    }
+
+    .sub-text{
+      color:#777;
+      font-size:.85rem;
+      margin-top:3px;
+    }
+
+    .status-group{
+      line-height:1.5;
+    }
+
+    .priority-pill{
+      display:inline-block;
+      padding:5px 12px;
+      border-radius:20px;
+      font-size:.8rem;
+      font-weight:bold;
+    }
+
+    .priority-Critical{
+      background:#ffebee;
+      color:#c62828;
+    }
+
+    .priority-High{
+      background:#fff3e0;
+      color:#ef6c00;
+    }
+
+    .priority-Medium{
+      background:#e3f2fd;
+      color:#1565c0;
+    }
+
+    .priority-Low{
+      background:#f1f8e9;
+      color:#33691e;
+    }
+
+    .status-pill{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:20px;
+      font-size:.78rem;
+      font-weight:bold;
+      margin-right:5px;
+    }
+
+    .status-open{
+      background:#fff3e0;
+      color:#ef6c00;
+    }
+
+    .status-progress{
+      background:#e3f2fd;
+      color:#1565c0;
+    }
+
+    .status-resolved{
+      background:#e8f5e9;
+      color:#2e7d32;
+    }
+
+    .open-btn{
+      display:inline-block;
+      text-decoration:none;
+      background:#008269;
+      color:white;
+      padding:10px 16px;
+      border-radius:6px;
+      font-weight:bold;
+      transition:.2s;
+    }
+
+    .open-btn:hover{
+      background:#006a55;
+    }
+
+    #loading,
+    #empty{
+      text-align:center;
+      padding:50px;
+      color:#666;
+    }
+
+    #empty{
+      display:none;
+    }
+
+    .error-row{
+      color:#c62828;
+      text-align:center;
+      padding:20px;
+    }
+
   </style>
+
 </head>
+
 <body>
 
-  <div class="container">
-    <div class="header">
-      <div>
-        <h1>HBL Complaints Portal</h1>
-        <div style="margin-top:5px;"><span class="dept-badge">Department: <%= employeeDept %></span></div>
+<div class="container">
+
+  <!-- Header -->
+
+  <div class="header">
+
+    <div>
+
+      <h1>HBL Complaints Portal</h1>
+
+      <div style="margin-top:8px;">
+
+        <span class="dept-badge">
+          Department:
+          <%= employeeDept %>
+        </span>
+
       </div>
-      <div>
-        <a href="/track" target="_blank" class="view-link">Track System &rarr;</a>
-      </div>
+
     </div>
 
-    <div class="search-bar">
-      <input id="filter" type="text" placeholder="Search by CNIC, Mobile or Email..." />
-      <button id="loadBtn">Search Complaints</button>
+    <div>
+
+      <a
+        href="/track"
+        target="_blank"
+        class="view-link"
+      >
+        Track System →
+      </a>
+
     </div>
 
-    <div class="table-container">
-      <table id="complaintTable">
-        <thead>
-          <tr>
-            <th>Complaint #</th>
-            <th>Customer Info</th>
-            <th>Product / Category</th>
-            <th>Status Info</th>
-            <th>Priority</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="tbody">
-          <!-- Data loaded via JS -->
-        </tbody>
-      </table>
-      <div id="loading">Gathering complaints...</div>
-      <div id="empty">No active complaints found for your department.</div>
-    </div>
   </div>
 
-  <script>
-    const tbody = document.getElementById('tbody');
-    const filterEl = document.getElementById('filter');
-    const loadBtn = document.getElementById('loadBtn');
-    const loadingEl = document.getElementById('loading');
-    const emptyEl = document.getElementById('empty');
+  <!-- Search -->
 
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+  <div class="search-bar">
+
+    <input
+      id="filter"
+      type="text"
+      placeholder="Search by CNIC, Mobile, Email or Name..."
+    />
+
+    <button id="loadBtn">
+      Search Complaints
+    </button>
+
+  </div>
+
+  <!-- Table -->
+
+  <div class="table-container">
+
+    <table>
+
+      <thead>
+
+        <tr>
+          <th>complaintid</th>
+          <th>Complaint #</th>
+          <th>Customer Info</th>
+          <th>Product / Category</th>
+          <th>Status</th>
+          <th>Priority</th>
+          <th>Action</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="tbody"></tbody>
+
+    </table>
+
+    <div id="loading">
+      Gathering complaints...
+    </div>
+
+    <div id="empty">
+      No complaints found.
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+const tbody =
+document.getElementById('tbody');
+
+const filterEl =
+document.getElementById('filter');
+
+const loadBtn =
+document.getElementById('loadBtn');
+
+const loadingEl =
+document.getElementById('loading');
+
+const emptyEl =
+document.getElementById('empty');
+
+function escapeHtml(str){
+
+  if(!str){
+    return '';
+  }
+
+  return String(str).replace(
+    /[&<>"']/g,
+    m => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[m])
+  );
+}
+
+// STATUS CLASS
+
+function getStatusClass(status){
+
+  if(
+    status === 'Resolved' ||
+    status === 'Closed'
+  ){
+    return 'status-resolved';
+  }
+
+  if(
+    status === 'In Progress'
+  ){
+    return 'status-progress';
+  }
+
+  return 'status-open';
+
+}
+
+// LOAD COMPLAINTS
+
+async function loadComplaints() {
+
+  let url = '/complaint/complaints';
+
+  loadingEl.style.display = 'block';
+  emptyEl.style.display = 'none';
+  tbody.innerHTML = '';
+
+  try {
+
+    const res = await fetch(url);
+
+    if (!res.ok) throw new Error('Failed to load complaints');
+
+    const data = await res.json();
+
+    loadingEl.style.display = 'none';
+
+    if (!data || data.length === 0) {
+      emptyEl.style.display = 'block';
+      return;
     }
 
-    async function loadComplaints() {
-      const q = filterEl.value.trim();
-      let url = '/complaint/complaints';
-      if (q) {
-        url += `?cnic=${encodeURIComponent(q)}&mobile=${encodeURIComponent(q)}&email=${encodeURIComponent(q)}&name=${encodeURIComponent(q)}`;
-      }
+    tbody.innerHTML = data.map(c => `
+      <tr>
+        <td>
+          <div class="complaint-id">#${escapeHtml(c._id)}</div>
+        </td>
 
-      loadingEl.style.display = 'block';
-      emptyEl.style.display = 'none';
-      tbody.innerHTML = '';
+        <td>
+          <div class="complaint-number">
+            #${escapeHtml(c.complaintNumber)}
+          </div>
+        </td>
 
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Failed to load complaints');
-        const data = await res.json();
+        <td>
+          <div style="font-weight:600;">
+            ${escapeHtml(c.name || '-')}
+          </div>
+          <div class="sub-text">${escapeHtml(c.cnic || '-')}</div>
+          <div class="sub-text">${escapeHtml(c.mobile || '-')}</div>
+        </td>
 
-        loadingEl.style.display = 'none';
+        <td>
+          <div>${escapeHtml(c.productType || '-')}</div>
+          <div class="sub-text">${escapeHtml(c.category || '-')}</div>
+        </td>
 
-        if (!data || data.length === 0) {
-          emptyEl.style.display = 'block';
-          return;
-        }
+        <td class="status-group">
+          <div>
+            <span class="status-pill ${getStatusClass(c.verificationStatus)}">
+              ${escapeHtml(c.verificationStatus || 'Pending')}
+            </span>
+          </div>
+          <div style="margin-top:8px;">
+            <span class="status-pill ${getStatusClass(c.currentStep)}">
+              ${escapeHtml(c.currentStep || 'Submitted')}
+            </span>
+          </div>
+          <div class="sub-text">
+            Resolution: ${escapeHtml(c.resolutionStatus || 'Open')}
+          </div>
+        </td>
 
-        tbody.innerHTML = data.map(c => `
-          <tr>
-            <td style="font-weight:bold; color:#008269;">#${escapeHtml(c.complaintNumber)}</td>
-            <td>
-              <div style="font-weight:600;">${escapeHtml(c.name)}</div>
-              <div class="sub-text">${escapeHtml(c.cnic)}</div>
-            </td>
-            <td>
-              <div>${escapeHtml(c.productType)}</div>
-              <div class="sub-text">${escapeHtml(c.category)}</div>
-            </td>
-            <td class="status-group">
-              <div style="font-size:0.9rem;">
-                <span title="Verification">${escapeHtml(c.verificationStatus)}</span> | 
-                <span title="Resolution">${escapeHtml(c.resolutionStatus)}</span>
-              </div>
-              <div class="sub-text">${escapeHtml(c.currentStep)}</div>
-            </td>
-            <td>
-              <span class="priority-pill priority-${c.priority || 'Medium'}">${escapeHtml(c.priority || 'Medium')}</span>
-            </td>
-            <td>
-              <a href="/complaint/complaintDetails?complaintNumber=${encodeURIComponent(c.complaintNumber)}" class="view-link">Open File</a>
-            </td>
-          </tr>
-        `).join('');
+        <td>
+          <span class="priority-pill priority-${escapeHtml(c.priority || 'Medium')}">
+            ${escapeHtml(c.priority || 'Medium')}
+          </span>
+        </td>
 
-      } catch (e) {
-        loadingEl.style.display = 'none';
-        tbody.innerHTML = `<tr><td colspan="6" style="color:#d32f2f; text-align:center; padding:20px;">Error: ${escapeHtml(e.message)}</td></tr>`;
-      }
-    }
+        <td>
+          <a href="#" class="open-btn" data-id="${c._id}">
+            Open File
+          </a>
+        </td>
 
-    loadBtn.addEventListener('click', loadComplaints);
-    loadComplaints(); // Initial load
-  </script>
+      </tr>
+    `).join('');
+
+  } catch (err) {
+
+    console.error(err);
+    loadingEl.style.display = 'none';
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="error-row">
+          ${escapeHtml(err.message)}
+        </td>
+      </tr>
+    `;
+  }
+}
+
+// SEARCH BUTTON
+
+loadBtn.addEventListener(
+  'click',
+  loadComplaints
+);
+
+
+
+// INITIAL LOAD
+
+loadComplaints();
+
+</script>
+
 </body>
 </html>

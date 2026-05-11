@@ -1,5 +1,5 @@
-const { getComplaintWithAllData } = require('./complaintQueryController')
+const compliantController = require('./complaintController')
 
-exports.trackComplaintByNumber = getComplaintWithAllData
+exports.trackComplaintByNumber = compliantController.getComplaintWithAllData
 
 
