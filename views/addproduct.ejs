@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register Product</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .box { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; }
+    button { margin-top: 10px; }
+    input, select { margin: 5px 0; display: block; width: 250px; }
+    hr { margin: 10px 0; }
+  </style>
+</head>
+
+<body>
+
+<h2>Create Product</h2>
+
+<form id="productForm">
+
+  <!-- PRODUCT INFO -->
+  <div class="box">
+    <h3>Product Info</h3>
+    <input type="text" id="slug" placeholder="Slug (e.g debit-cards)" required />
+    <input type="text" id="label" placeholder="Label (e.g Debit Cards)" required />
+
+    <select id="is_active">
+      <option value="true">Active</option>
+      <option value="false">Inactive</option>
+    </select>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="box">
+    <h3>Categories</h3>
+    <div id="categories"></div>
+    <button type="button" onclick="addCategory()">+ Add Category</button>
+  </div>
+
+  <!-- INPUT FIELDS -->
+  <div class="box">
+    <h3>Input Fields</h3>
+    <div id="fields"></div>
+    <button type="button" onclick="addField()">+ Add Field</button>
+  </div>
+
+  <!-- SLA -->
+  <div class="box">
+    <h3>SLA Steps</h3>
+    <div id="sla"></div>
+    <button type="button" onclick="addSLA()">+ Add SLA Step</button>
+  </div>
+
+  <button type="submit">Submit</button>
+
+</form>
+
+<script>
+
+let fieldCount = 0;
+let slaCount = 0;
+
+/* ---------------- CATEGORY ---------------- */
+function addCategory() {
+  const div = document.createElement("div");
+
+  div.innerHTML = `
+    <input type="text" placeholder="Category Name" class="category_name" />
+    <input type="text" placeholder="Category Description" class="category_desc" />
+    <hr/>
+  `;
+
+  document.getElementById("categories").appendChild(div);
+}
+
+/* ---------------- FIELD ---------------- */
+function addField() {
+  fieldCount++;
+
+  const div = document.createElement("div");
+
+  div.innerHTML = `
+    <input type="text" placeholder="Label" class="f_label" />
+    <input type="text" placeholder="Name" class="f_name" />
+
+    <select class="f_type">
+      <option>text</option>
+      <option>number</option>
+      <option>date</option>
+      <option>dropdown</option>
+    </select>
+
+    <input type="text" placeholder="Placeholder" class="f_placeholder" />
+    <input type="number" placeholder="Order" class="f_order" />
+
+    <label>
+      Required
+      <input type="checkbox" class="f_required" />
+    </label>
+
+    <hr/>
+  `;
+
+  document.getElementById("fields").appendChild(div);
+}
+
+/* ---------------- SLA ---------------- */
+function addSLA() {
+  slaCount++;
+
+  const div = document.createElement("div");
+
+  div.innerHTML = `
+    <input type="text" placeholder="Step Name" class="s_step" />
+    <input type="number" placeholder="Days" class="s_days" />
+    <hr/>
+  `;
+
+  document.getElementById("sla").appendChild(div);
+}
+
+/* ---------------- SUBMIT ---------------- */
+document.getElementById('productForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const product = {
+    slug: document.getElementById('slug').value,
+    label: document.getElementById('label').value,
+    is_active: document.getElementById('is_active').value === "true"
+  };
+
+  // ✅ SAFE CATEGORY MAPPING (FIXED undefined issue)
+  const categories = Array.from(document.querySelectorAll('#categories > div'))
+    .map(div => {
+      const nameEl = div.querySelector('.category_name');
+      const descEl = div.querySelector('.category_desc');
+
+      return {
+        name: nameEl ? nameEl.value.trim() : "",
+        description: descEl ? descEl.value.trim() : ""
+      };
+    })
+    .filter(c => c.name !== ""); // remove empty
+
+  // INPUT FIELDS
+  const fields = Array.from(document.querySelectorAll('#fields > div'))
+    .map(div => ({
+      label: div.querySelector('.f_label')?.value || "",
+      name: div.querySelector('.f_name')?.value || "",
+      type: div.querySelector('.f_type')?.value || "",
+      required: div.querySelector('.f_required')?.checked || false,
+      placeholder: div.querySelector('.f_placeholder')?.value || "",
+      order: div.querySelector('.f_order')?.value || ""
+    }));
+
+  // SLA
+  const sla = Array.from(document.querySelectorAll('#sla > div'))
+    .map(div => ({
+      step: div.querySelector('.s_step')?.value || "",
+      days: div.querySelector('.s_days')?.value || ""
+    }));
+
+  const finalData = {
+    product,
+    categories,
+    inputFields: fields,
+    sla
+  };
+
+  // console.log("FINAL DATA:", finalData); // 🔥 DEBUG
+
+fetch('api/product/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(finalData)
+  })
+  .then(() => {
+    console.log(finalData)
+    clearform()
+    alert("Data Submitted Successfully!");
+  })
+  .catch((err) => {
+    console.log(finalData)
+    alert(`Error: ${err.message}`);
+  });
+
+});
+function clearform() {
+  document.getElementById("slug").value = "";
+  document.getElementById("label").value = "";
+  document.getElementById("is_active").value = "true";
+  document.getElementById("categories").innerHTML = "";
+  document.getElementById("fields").innerHTML = "";
+  document.getElementById("sla").innerHTML = "";
+  fieldCount = 0;
+  slaCount = 0;
+
+  console.log("Form cleared successfully");
+}
+
+</script>
+
+</body>
+</html>

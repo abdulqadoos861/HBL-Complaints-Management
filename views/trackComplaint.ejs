@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Track Complaint</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input { width: 320px; max-width: 100%; padding: 8px; }
+    button { padding: 10px 14px; cursor:pointer; margin-left: 8px; }
+    .box { border: 1px solid #ddd; padding: 14px; margin-top: 16px; border-radius: 6px; }
+    .row { margin-bottom: 10px; }
+    label { display:block; margin-bottom: 6px; font-weight: 600; }
+    pre { background:#f6f6f6; padding: 10px; overflow:auto; }
+    .error { color: #b00020; }
+  </style>
+</head>
+<body>
+  <h2>Track Complaint</h2>
+
+  <div class="row">
+    <label>Complaint Number</label>
+    <input type="text" id="complaintNumber" placeholder="e.g. HBL-1234567" />
+    <button id="trackBtn" type="button">Track</button>
+  </div>
+
+  <div id="result" class="box" style="display:none"></div>
+  <div id="error" class="error" style="display:none"></div>
+
+  <script>
+    const complaintNumberEl = document.getElementById('complaintNumber');
+    const trackBtn = document.getElementById('trackBtn');
+    const resultEl = document.getElementById('result');
+    const errorEl = document.getElementById('error');
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.style.display = 'block';
+      resultEl.style.display = 'none';
+      resultEl.innerHTML = '';
+    }
+
+    function showResult(data) {
+      errorEl.style.display = 'none';
+      resultEl.style.display = 'block';
+      resultEl.innerHTML = `
+        <div><b>Complaint Number:</b> 	${data.complaintNumber || ''}</div>
+        <div><b>Customer:</b> 	${data.name || ''} (${data.mobile || ''})</div>
+        <div><b>Product Type / Category:</b> 	${data.productType || ''} / ${data.category || ''}</div>
+        <div><b>Subject:</b> 	${data.subject || ''}</div>
+        <div><b>Status:</b> 	${data.verificationStatus || ''} | ${data.resolutionStatus || ''} | ${data.currentStep || ''}</div>
+        <div style="margin-top:10px"><b>Details (Dynamic):</b></div>
+        ${(() => {
+          const details = data.details || {};
+          if (!details || typeof details !== 'object' || Array.isArray(details)) {
+            return `<pre>${JSON.stringify(details, null, 2)}</pre>`;
+          }
+          const entries = Object.entries(details);
+          if (entries.length === 0) return `<div>No details</div>`;
+
+          const rows = entries
+            .map(([k, v]) => {
+              const safeV = (v === null || v === undefined) ? '' : String(v);
+              return `<div style="display:flex;gap:10px;margin:3px 0;"><div style="min-width:200px;font-weight:600;">${k}</div><div>${safeV}</div></div>`;
+            })
+            .join('');
+          return rows;
+        })()}
+      `;
+    }
+
+    async function track() {
+      const complaintNumber = complaintNumberEl.value.trim();
+      if (!complaintNumber) return showError('Please enter complaint number');
+
+try {
+        const res = await fetch(`/api/tracking/${encodeURIComponent(complaintNumber)}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || 'Failed to track complaint');
+        }
+        const data = await res.json();
+        showResult(data);
+      } catch (e) {
+        showError(e.message);
+      }
+    }
+
+    trackBtn.addEventListener('click', track);
+    complaintNumberEl.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') track();
+    });
+  </script>
+</body>
+</html>
+
