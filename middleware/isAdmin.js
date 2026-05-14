@@ -1,23 +1,35 @@
-const jwt = require('jsonwebtoken')
 const userModel = require('../models/user')
 
-async function isAdmin(req ,res , next){
-    const username = req.user.username;
-    const existed = await userModel.findOne({username : username})
-    if(!existed){
-        console.log(username)
-        console.log(existed)
-       return res.render('login',{message:"User not authenticated"})
+async function isAdmin(req, res, next) {
+    if (!req.user) {
+        if (req.originalUrl.startsWith('/api') || req.xhr) {
+            return res.status(401).json({ message: "User not authenticated" });
+        }
+        return res.render('login', { message: "User not authenticated" });
     }
-    else{
-        if(existed.role === 'admin'){
-            next()
+
+    try {
+        const user = await userModel.findOne({ username: req.user.username });
+        if (!user) {
+            if (req.originalUrl.startsWith('/api') || req.xhr) {
+                return res.status(401).json({ message: "User not found" });
+            }
+            return res.render('login', { message: "User not found" });
         }
-        else{
-            cosole.log("user is not admin")
-           return  res.render('login',{message:"User not authenticated"})
+
+        if (user.role === 'admin') {
+            next();
+        } else {
+            console.log("user is not admin");
+            if (req.originalUrl.startsWith('/api') || req.xhr) {
+                return res.status(403).json({ message: "User not authorized as admin" });
+            }
+            return res.render('login', { message: "User not authorized" });
         }
+    } catch (err) {
+        console.error('Admin middleware error:', err);
+        return res.status(500).json({ message: "Server error" });
     }
 }
 
-module.exports = isAdmin
+module.exports = isAdmin;

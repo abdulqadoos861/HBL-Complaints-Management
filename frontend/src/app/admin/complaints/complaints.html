@@ -1,0 +1,77 @@
+<div class="max-w-6xl mx-auto p-6">
+  <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-[#a91b2c] to-[#7a131f] px-8 py-6 text-white flex justify-between items-center">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight">System Complaints</h2>
+        <p class="text-white/80 text-sm mt-1">Review and manage all customer submitted complaints.</p>
+      </div>
+      <button (click)="fetchComplaints()" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+        <i class="fas fa-sync-alt" [class.animate-spin]="isLoading"></i>
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="p-20 text-center">
+      <i class="fas fa-circle-notch fa-spin text-4xl text-[#a91b2c] mb-4"></i>
+      <p class="text-gray-500 font-medium">Fetching complaints from server...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !isLoading" class="p-12 text-center text-red-600">
+      <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+      <p class="font-bold">{{ error }}</p>
+    </div>
+
+    <!-- Data Table -->
+    <div *ngIf="!isLoading && !error" class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Complaint #</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Customer</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Product / Category</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Priority</th>
+            <th class="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <tr *ngFor="let c of complaints" class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4">
+              <span class="font-mono text-sm font-bold text-gray-900">{{ c.complaintNumber }}</span>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm font-medium text-gray-900">{{ c.name }}</div>
+              <div class="text-xs text-gray-500">{{ c.mobile }}</div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="text-sm text-gray-700 font-semibold">{{ c.productType }}</div>
+              <div class="text-xs text-gray-500">{{ c.category || 'N/A' }}</div>
+            </td>
+            <td class="px-6 py-4">
+              <span [ngClass]="getStatusClass(c.verificationStatus)" class="px-3 py-1 rounded-full text-xs font-bold border">
+                {{ c.verificationStatus || 'Pending' | uppercase }}
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-sm font-bold" [ngClass]="c.priority === 'High' ? 'text-red-600' : 'text-gray-600'">
+                {{ c.priority || 'Medium' }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-sm">
+              <button (click)="onViewDetails(c._id)" class="text-[#a91b2c] font-bold hover:underline transition-all active:scale-90">View Details</button>
+            </td>
+          </tr>
+          <!-- Empty State -->
+          <tr *ngIf="complaints.length === 0">
+            <td colspan="6" class="px-6 py-20 text-center text-gray-400">
+              <i class="fas fa-folder-open text-4xl mb-4"></i>
+              <p>No complaints found in the system.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

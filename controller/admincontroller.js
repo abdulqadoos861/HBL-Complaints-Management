@@ -13,7 +13,6 @@ async function addEmployee(req, res) {
       password
     } = req.body || {};
 
-    // Basic validation (simple)
     if (!employee_id || !name || !username || !email || !password) {
       return res.status(400).json({
         ok: false,
@@ -21,7 +20,6 @@ async function addEmployee(req, res) {
       });
     }
 
-    // Duplicate employee_id check
     const existingEmployee = await Employee.findOne({ employee_id });
     if (existingEmployee) {
       return res.status(409).json({
@@ -70,6 +68,23 @@ async function addEmployee(req, res) {
   }
 }
 
+async function getAllEmployees(req, res) {
+  try {
+    const employees = await Employee.find().sort({ createdAt: -1 }).lean();
+    return res.json({
+      ok: true,
+      employees
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      ok: false,
+      message: 'Server error while fetching employees'
+    });
+  }
+}
+
 module.exports = {
-  addEmployee
+  addEmployee,
+  getAllEmployees
 };

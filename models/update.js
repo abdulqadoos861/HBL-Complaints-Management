@@ -21,7 +21,7 @@ const complaintUpdateSchema = new mongoose.Schema({
     },
     updatedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user"
+        ref: "User"
     },
     attachments: [
         {

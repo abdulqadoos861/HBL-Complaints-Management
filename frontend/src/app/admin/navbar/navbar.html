@@ -1,0 +1,54 @@
+<nav class="sticky top-0 z-50 bg-gradient-to-r from-[#a91b2c] to-[#7a131f] text-white px-6 py-3 shadow-xl">
+  <div class="max-w-[1400px] mx-auto flex justify-between items-center">
+    <!-- Brand -->
+    <div class="flex items-center gap-4 cursor-pointer" (click)="changeView('dashboard')">
+      <img src="https://www.hbl.com/assets/images/hbl-logo.png" alt="HBL Logo" class="h-10 brightness-0 invert">
+      <span class="text-xl font-bold tracking-wider uppercase hidden md:block">Admin Dashboard</span>
+    </div>
+    
+    <!-- Navigation Links -->
+    <div class="hidden lg:flex items-center gap-6">
+      <button 
+        (click)="changeView('dashboard')" 
+        class="px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:bg-white/10 active:scale-95" 
+        [ngClass]="{'bg-white/20 shadow-inner': activeView === 'dashboard'}">
+        Dashboard
+      </button>
+      <button 
+        (click)="changeView('add-employee')" 
+        class="px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:bg-white/10 active:scale-95" 
+        [ngClass]="{'bg-white/20 shadow-inner': activeView === 'add-employee'}">
+        Add Employee
+      </button>
+      <button 
+        (click)="changeView('complaints')" 
+        class="px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:bg-white/10 active:scale-95" 
+        [ngClass]="{'bg-white/20 shadow-inner': activeView === 'complaints'}">
+        Complaints
+      </button>
+      <button 
+        (click)="goToProfile()" 
+        class="px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:bg-white/10 active:scale-95">
+        My Profile
+      </button>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-3 pr-6 border-r border-white/20">
+        <div class="text-right hidden sm:block">
+          <p class="text-sm font-semibold">Admin User</p>
+          <p class="text-xs text-white/70">Super Admin</p>
+        </div>
+        <div class="w-10 h-10 bg-white text-[#a91b2c] rounded-full flex items-center justify-center font-bold shadow-md">
+          A
+        </div>
+      </div>
+      
+      <button (click)="logout()" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/30 font-medium transition-all duration-300 hover:bg-white hover:text-[#a91b2c] hover:border-white active:scale-95" routerLink="/login">
+        <i class="fas fa-sign-out-alt"></i>
+        <span class="hidden sm:inline">Logout</span>
+      </button>
+    </div>
+  </div>
+</nav>

@@ -10,6 +10,7 @@ router.get('/addemployee', isLogedIn, isAdmin, (req, res) => {
   res.render('addemployee');
 });
 
-router.post('/api/admin/addemployee', isLogedIn, isAdmin, adminController.addEmployee);
+router.post('/admin/addemployee', isLogedIn, isAdmin, adminController.addEmployee);
+router.get('/admin/employees', isLogedIn, isAdmin, adminController.getAllEmployees);
 
 module.exports = router;

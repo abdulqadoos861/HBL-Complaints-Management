@@ -3,9 +3,14 @@ const path = require('path')
 const app = express()
 const dotenv = require('dotenv')
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
 
 
 dotenv.config()
+app.use(cors({
+    origin: 'http://localhost:4200',
+    credentials: true
+}))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
@@ -24,26 +29,21 @@ const complaintRoutes = require('./routes/complaintroutes')
 const trackingRoutes = require('./routes/trackingRoutes')
 const trackPageRoutes = require('./routes/trackPageRoutes')
 
-app.set('view engine','ejs')
-app.use('/',authRoutes)
-app.use('/',adminRoutes)
+app.use('/api',authRoutes)
+app.use('/api',adminRoutes)
 app.use('/api',productRoutes)
-app.use('/complaint',complaintRoutes)
+app.use('/api',complaintRoutes)
 app.use('/api', trackingRoutes)
-app.use('/', trackPageRoutes)
+app.use('/api', trackPageRoutes)
 
 
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')))
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads', 'complaints')))
 
 
 
-app.get('/logout',(req,res)=>{
+app.post('/api/logout',(req,res)=>{
     res.clearCookie('token')
-    res.redirect('/login')
-})
-
-app.get('/',(req,res)=>{
-    res.render('index')
+    res.json({ message: "Logged out successfully" })
 })
 
 app.listen(3000 , ()=>{

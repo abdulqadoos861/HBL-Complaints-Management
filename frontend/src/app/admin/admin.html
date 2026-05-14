@@ -1,0 +1,40 @@
+<div class="min-h-screen bg-[#f8fafc] font-['Inter',_sans-serif]">
+  <!-- Navbar Component with View Switching -->
+  <app-admin-navbar (viewChanged)="setView($event)"></app-admin-navbar>
+  
+  <main class="max-w-[1400px] mx-auto p-6 md:p-10">
+    <!-- Header (Hidden when viewing details to give more space) -->
+    <div *ngIf="currentView !== 'view-details'" class="mb-10 animate-fade-in-down">
+      <div class="flex items-center gap-4 mb-2">
+        <div class="w-1.5 h-10 bg-[#a91b2c] rounded-full"></div>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+          {{ currentView === 'dashboard' ? 'System Administration' : 
+             currentView === 'add-employee' ? 'Employee Management' : 'Complaint Resolution' }}
+        </h1>
+      </div>
+      <p class="text-gray-500 font-medium ml-5">
+        {{ currentView === 'dashboard' ? 'Monitor system performance and updates.' : 
+           currentView === 'add-employee' ? 'Register and manage staff members.' : 'Review and address customer issues.' }}
+      </p>
+    </div>
+
+    <!-- Dynamic Content Area -->
+    <div class="bg-white/50 backdrop-blur-sm rounded-3xl p-1 animate-fade-in-up min-h-[500px]">
+      <app-admin-home *ngIf="currentView === 'dashboard'"></app-admin-home>
+      <app-add-employee *ngIf="currentView === 'add-employee'"></app-add-employee>
+      
+      <!-- Complaints List -->
+      <app-admin-complaints 
+        *ngIf="currentView === 'complaints'" 
+        (viewDetails)="showComplaintDetails($event)">
+      </app-admin-complaints>
+
+      <!-- Complaint Deep Dive Details -->
+      <app-view-complaint 
+        *ngIf="currentView === 'view-details'" 
+        [complaintId]="selectedComplaintId"
+        (back)="closeDetails()">
+      </app-view-complaint>
+    </div>
+  </main>
+</div>

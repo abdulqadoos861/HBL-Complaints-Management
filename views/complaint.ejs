@@ -18,24 +18,33 @@
 <body>
   <h2>Register Complaint</h2>
 
-  <div class="row">
+  <% if (customerData) { %>
+    <div class="row" style="background: #e9f5f0; padding: 15px; border-radius: 8px; border: 1px solid #bfe3d3; margin-bottom: 20px;">
+      <p style="color: #008269; font-weight: bold; margin: 0;">
+        Logged in as: <%= customerData.name %> 
+        <span style="font-weight: normal; font-size: 13px; color: #666; margin-left: 10px;">(Your profile details will be linked automatically)</span>
+      </p>
+    </div>
+  <% } %>
+
+  <div class="row" <% if (customerData) { %> style="display: none;" <% } %> >
     <label>Name</label>
-    <input type="text" id="name" />
+    <input type="text" id="name" value="<%= customerData ? customerData.name : '' %>" />
   </div>
 
-  <div class="row">
+  <div class="row" <% if (customerData) { %> style="display: none;" <% } %> >
     <label>CNIC</label>
-    <input type="text" id="cnic" />
+    <input type="text" id="cnic" value="<%= customerData ? customerData.cnic : '' %>" />
   </div>
 
-  <div class="row">
+  <div class="row" <% if (customerData) { %> style="display: none;" <% } %> >
     <label>Mobile</label>
-    <input type="text" id="mobile" />
+    <input type="text" id="mobile" value="<%= customerData ? customerData.mobile : '' %>" />
   </div>
 
-  <div class="row">
+  <div class="row" <% if (customerData) { %> style="display: none;" <% } %> >
     <label>Email</label>
-    <input type="email" id="email" />
+    <input type="email" id="email" value="<%= customerData ? customerData.email : '' %>" />
   </div>
 
   <hr />
@@ -156,17 +165,21 @@
       }
     }
 
-    function renderDynamicFields(fields) {
-      dynamicFieldsEl.innerHTML = '';
+    let allFields = [];
 
-      if (!Array.isArray(fields) || fields.length === 0) {
-        dynamicFieldsEl.innerHTML = '<p>No dynamic fields for this product.</p>';
+    function renderDynamicFields(categoryName) {
+      dynamicFieldsEl.innerHTML = '';
+      
+      const filteredFields = categoryName 
+        ? allFields.filter(f => !f.categoryName || f.categoryName.trim() === "" || f.categoryName === categoryName)
+        : allFields;
+
+      if (!Array.isArray(filteredFields) || filteredFields.length === 0) {
+        dynamicFieldsEl.innerHTML = '<p style="color:#999; font-size:13px;">No specific details required for this selection.</p>';
         return;
       }
 
-      // Each inputfield has: label, name, type, required, placeholder, order
-      // We will render all fields; category filtering can be added later if needed.
-      fields
+      filteredFields
         .slice()
         .sort((a,b) => (a.order ?? 0) - (b.order ?? 0))
         .forEach((f) => {
@@ -179,36 +192,15 @@
           let input;
           const type = (f.type || 'text').toLowerCase();
 
-          if (type === 'dropdown') {
-            input = document.createElement('select');
-            input.id = `df_${f.name}`;
-            input.name = f.name;
-
-            const opt0 = document.createElement('option');
-            opt0.value = '';
-            opt0.textContent = '-- Select --';
-            input.appendChild(opt0);
-
-            const options = Array.isArray(f.options) ? f.options : [];
-            for (const o of options) {
-              const opt = document.createElement('option');
-              if (typeof o === 'string') {
-                opt.value = o;
-                opt.textContent = o;
-              } else {
-                const ov = o.value ?? o.name ?? o.label ?? '';
-                opt.value = ov;
-                opt.textContent = ov || JSON.stringify(o);
-              }
-              if (opt.value) input.appendChild(opt);
-            }
+          if (type === 'textarea') {
+            input = document.createElement('textarea');
           } else {
             input = document.createElement('input');
-            input.type = type === 'palceholder' ? 'text' : (['number','date','text'].includes(type) ? type : 'text');
-            input.id = `df_${f.name}`;
-            input.name = f.name;
+            input.type = ['number','date','text'].includes(type) ? type : 'text';
           }
-
+          
+          input.id = `df_${f.name}`;
+          input.name = f.name;
           if (f.placeholder) input.placeholder = f.placeholder;
           if (f.required) input.required = true;
 
@@ -221,8 +213,8 @@
     async function loadDynamicFields(productId) {
       const res = await fetch(`/api/inputFields/${productId}`);
       if (!res.ok) throw new Error('Failed to load input fields');
-      const fields = await res.json();
-      renderDynamicFields(fields);
+      allFields = await res.json();
+      renderDynamicFields(categoryEl.value);
     }
 
     async function refreshDependent() {
@@ -235,6 +227,7 @@
         categoryEl.appendChild(placeholder);
 
         dynamicFieldsEl.innerHTML = '';
+        allFields = [];
         return;
       }
 
@@ -244,6 +237,10 @@
       await loadCategories(productId);
       await loadDynamicFields(productId);
     }
+
+    categoryEl.addEventListener('change', () => {
+        renderDynamicFields(categoryEl.value);
+    });
 
     async function submitComplaint() {
       const dynamicInputs = dynamicFieldsEl.querySelectorAll('[id^="df_"]');

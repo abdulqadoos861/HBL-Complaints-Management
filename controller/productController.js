@@ -22,7 +22,8 @@ exports.addProduct =async function  (req,res){
             type: field.type,
             required: field.required,
             placeholder: field.placeholder,
-            order: field.order
+            order: field.order,
+            categoryName: field.categoryName
         }));
 
         const created_fields = await inputFieldModel.insertMany(fieldsToInsert);

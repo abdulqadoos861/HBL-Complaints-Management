@@ -11,7 +11,8 @@ const inputFieldsSchema = mongoose.Schema({
     required : Boolean,
     options :[],
     palceholder : String,
-    order : Number
+    order : Number,
+    categoryName : String
 });
 
 module.exports = mongoose.model('inputFields',inputFieldsSchema)

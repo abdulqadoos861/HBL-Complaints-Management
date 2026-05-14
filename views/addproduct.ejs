@@ -1,121 +1,238 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Register Product</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Product | HBL Admin</title>
   <style>
-    body { font-family: Arial; padding: 20px; }
-    .box { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; }
-    button { margin-top: 10px; }
-    input, select { margin: 5px 0; display: block; width: 250px; }
-    hr { margin: 10px 0; }
+    :root {
+      --primary: #008269;
+      --bg: #f4f7f6;
+      --white: #ffffff;
+      --text: #333;
+      --gray: #666;
+      --danger: #d32f2f;
+      --border: #ddd;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; }
+
+    .container { max-width: 900px; margin: auto; }
+    .header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+    .header h2 { color: var(--primary); font-size: 28px; }
+
+    .card { background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
+    .card h3 { font-size: 18px; color: var(--primary); margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 13px; font-weight: bold; color: var(--gray); margin-bottom: 8px; }
+    
+    input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; transition: border 0.3s; }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(0,130,105,0.1); }
+
+    .btn { padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; transition: all 0.3s; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-add { background: #e0f2f1; color: var(--primary); }
+    .btn-add:hover { background: #b2dfdb; }
+    .btn-remove { background: #ffebee; color: var(--danger); padding: 5px 10px; font-size: 12px; }
+    .btn-remove:hover { background: #ffcdd2; }
+    .btn-submit { background: var(--primary); color: white; width: 100%; padding: 15px; font-size: 16px; margin-top: 20px; }
+    .btn-submit:hover { background: #006b56; transform: translateY(-2px); }
+
+    .item-row { background: #fcfcfc; border: 1px solid #eee; padding: 20px; border-radius: 8px; margin-bottom: 15px; position: relative; animation: slideIn 0.3s ease; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .remove-wrapper { position: absolute; top: 15px; right: 15px; }
+
+    hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+    
+    .back-btn { text-decoration: none; color: var(--gray); font-size: 14px; font-weight: bold; }
+    .back-btn:hover { color: var(--primary); }
   </style>
 </head>
-
 <body>
 
-<h2>Create Product</h2>
-
-<form id="productForm">
-
-  <!-- PRODUCT INFO -->
-  <div class="box">
-    <h3>Product Info</h3>
-    <input type="text" id="slug" placeholder="Slug (e.g debit-cards)" required />
-    <input type="text" id="label" placeholder="Label (e.g Debit Cards)" required />
-
-    <select id="is_active">
-      <option value="true">Active</option>
-      <option value="false">Inactive</option>
-    </select>
+<div class="container">
+  <div class="header">
+    <h2>Create New Product</h2>
+    <a href="/adminDashboard" class="back-btn">← Back to Dashboard</a>
   </div>
 
-  <!-- CATEGORIES -->
-  <div class="box">
-    <h3>Categories</h3>
-    <div id="categories"></div>
-    <button type="button" onclick="addCategory()">+ Add Category</button>
-  </div>
+  <form id="productForm">
 
-  <!-- INPUT FIELDS -->
-  <div class="box">
-    <h3>Input Fields</h3>
-    <div id="fields"></div>
-    <button type="button" onclick="addField()">+ Add Field</button>
-  </div>
+    <!-- PRODUCT INFO -->
+    <div class="card">
+      <h3>General Product Information</h3>
+      <div class="grid">
+        <div class="form-group">
+          <label for="slug">Product Slug (Unique ID)</label>
+          <input type="text" id="slug" placeholder="e.g. personal-loans" required />
+        </div>
+        <div class="form-group">
+          <label for="label">Product Label (Display Name)</label>
+          <input type="text" id="label" placeholder="e.g. Personal Loans" required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="is_active">Status</label>
+        <select id="is_active">
+          <option value="true">Active & Visible to Customers</option>
+          <option value="false">Inactive / Hidden</option>
+        </select>
+      </div>
+    </div>
 
-  <!-- SLA -->
-  <div class="box">
-    <h3>SLA Steps</h3>
-    <div id="sla"></div>
-    <button type="button" onclick="addSLA()">+ Add SLA Step</button>
-  </div>
+    <!-- CATEGORIES -->
+    <div class="card">
+      <h3>
+        Product Categories
+        <button type="button" class="btn btn-add" onclick="addCategory()">+ Add Category</button>
+      </h3>
+      <div id="categories"></div>
+      <p id="no-cats" style="color: #999; font-size: 14px; text-align: center; padding: 20px;">No categories added yet. Categories define the specific types of complaints for this product.</p>
+    </div>
 
-  <button type="submit">Submit</button>
+    <!-- INPUT FIELDS -->
+    <div class="card">
+      <h3>
+        Dynamic Input Fields
+        <button type="button" class="btn btn-add" onclick="addField()">+ Add Field</button>
+      </h3>
+      <div id="fields"></div>
+      <p id="no-fields" style="color: #999; font-size: 14px; text-align: center; padding: 20px;">No custom input fields defined.</p>
+    </div>
 
-</form>
+    <!-- SLA -->
+    <div class="card">
+      <h3>
+        SLA Configuration (Processing Time)
+        <button type="button" class="btn btn-add" onclick="addSLA()">+ Add SLA Step</button>
+      </h3>
+      <div id="sla"></div>
+      <p id="no-sla" style="color: #999; font-size: 14px; text-align: center; padding: 20px;">No SLA steps defined.</p>
+    </div>
+
+    <button type="submit" class="btn btn-submit">Save Product Configuration</button>
+
+  </form>
+</div>
 
 <script>
-
 let fieldCount = 0;
 let slaCount = 0;
+let categoryCount = 0;
+
+function toggleNoData(id, count) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = count > 0 ? 'none' : 'block';
+}
 
 /* ---------------- CATEGORY ---------------- */
 function addCategory() {
+  categoryCount++;
+  toggleNoData('no-cats', categoryCount);
   const div = document.createElement("div");
-
+  div.className = "item-row";
   div.innerHTML = `
-    <input type="text" placeholder="Category Name" class="category_name" />
-    <input type="text" placeholder="Category Description" class="category_desc" />
-    <hr/>
+    <div class="remove-wrapper">
+      <button type="button" class="btn btn-remove" onclick="removeParent(this, 'category')">Remove</button>
+    </div>
+    <div class="grid">
+      <div class="form-group">
+        <label>Category Name</label>
+        <input type="text" placeholder="e.g. Service Delay" class="category_name" required />
+      </div>
+      <div class="form-group">
+        <label>Description (Internal)</label>
+        <input type="text" placeholder="Brief description of this category" class="category_desc" />
+      </div>
+    </div>
   `;
-
   document.getElementById("categories").appendChild(div);
 }
 
 /* ---------------- FIELD ---------------- */
 function addField() {
   fieldCount++;
-
+  toggleNoData('no-fields', fieldCount);
   const div = document.createElement("div");
-
+  div.className = "item-row";
   div.innerHTML = `
-    <input type="text" placeholder="Label" class="f_label" />
-    <input type="text" placeholder="Name" class="f_name" />
-
-    <select class="f_type">
-      <option>text</option>
-      <option>number</option>
-      <option>date</option>
-      <option>dropdown</option>
-    </select>
-
-    <input type="text" placeholder="Placeholder" class="f_placeholder" />
-    <input type="number" placeholder="Order" class="f_order" />
-
-    <label>
-      Required
-      <input type="checkbox" class="f_required" />
-    </label>
-
-    <hr/>
+    <div class="remove-wrapper">
+      <button type="button" class="btn btn-remove" onclick="removeParent(this, 'field')">Remove</button>
+    </div>
+    <div class="grid">
+      <div class="form-group">
+        <label>Field Label</label>
+        <input type="text" placeholder="e.g. Account Number" class="f_label" required />
+      </div>
+      <div class="form-group">
+        <label>Internal Name</label>
+        <input type="text" placeholder="e.g. account_number" class="f_name" required />
+      </div>
+    </div>
+    <div class="grid">
+      <div class="form-group">
+        <label>Field Type</label>
+        <select class="f_type">
+          <option value="text">Short Text</option>
+          <option value="number">Number</option>
+          <option value="date">Date Picker</option>
+          <option value="textarea">Long Text (Paragraph)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Display Order</label>
+        <input type="number" placeholder="1" class="f_order" value="${fieldCount}" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Belongs to Category (Must match a Category Name above exactly, or leave blank for all)</label>
+      <input type="text" placeholder="e.g. Service Delay" class="f_category" />
+    </div>
+    <div class="form-group">
+      <label>
+        <input type="checkbox" class="f_required" style="width: auto; margin-right: 10px;"> This field is required
+      </label>
+    </div>
   `;
-
   document.getElementById("fields").appendChild(div);
 }
 
 /* ---------------- SLA ---------------- */
 function addSLA() {
   slaCount++;
-
+  toggleNoData('no-sla', slaCount);
   const div = document.createElement("div");
-
+  div.className = "item-row";
   div.innerHTML = `
-    <input type="text" placeholder="Step Name" class="s_step" />
-    <input type="number" placeholder="Days" class="s_days" />
-    <hr/>
+    <div class="remove-wrapper">
+      <button type="button" class="btn btn-remove" onclick="removeParent(this, 'sla')">Remove</button>
+    </div>
+    <div class="grid">
+      <div class="form-group">
+        <label>Process Step Name</label>
+        <input type="text" placeholder="e.g. Verification" class="s_step" required />
+      </div>
+      <div class="form-group">
+        <label>Allowed Days (SLA)</label>
+        <input type="number" placeholder="2" class="s_days" required />
+      </div>
+    </div>
   `;
-
   document.getElementById("sla").appendChild(div);
+}
+
+function removeParent(btn, type) {
+  btn.closest('.item-row').remove();
+  if (type === 'category') categoryCount--;
+  if (type === 'field') fieldCount--;
+  if (type === 'sla') slaCount--;
+  
+  toggleNoData('no-cats', categoryCount);
+  toggleNoData('no-fields', fieldCount);
+  toggleNoData('no-sla', slaCount);
 }
 
 /* ---------------- SUBMIT ---------------- */
@@ -128,77 +245,49 @@ document.getElementById('productForm').addEventListener('submit', function(e) {
     is_active: document.getElementById('is_active').value === "true"
   };
 
-  // ✅ SAFE CATEGORY MAPPING (FIXED undefined issue)
-  const categories = Array.from(document.querySelectorAll('#categories > div'))
-    .map(div => {
-      const nameEl = div.querySelector('.category_name');
-      const descEl = div.querySelector('.category_desc');
+  const categories = Array.from(document.querySelectorAll('#categories .item-row'))
+    .map(div => ({
+      name: div.querySelector('.category_name')?.value.trim() || "",
+      description: div.querySelector('.category_desc')?.value.trim() || ""
+    }))
+    .filter(c => c.name !== "");
 
-      return {
-        name: nameEl ? nameEl.value.trim() : "",
-        description: descEl ? descEl.value.trim() : ""
-      };
-    })
-    .filter(c => c.name !== ""); // remove empty
-
-  // INPUT FIELDS
-  const fields = Array.from(document.querySelectorAll('#fields > div'))
+  const fields = Array.from(document.querySelectorAll('#fields .item-row'))
     .map(div => ({
       label: div.querySelector('.f_label')?.value || "",
       name: div.querySelector('.f_name')?.value || "",
       type: div.querySelector('.f_type')?.value || "",
       required: div.querySelector('.f_required')?.checked || false,
       placeholder: div.querySelector('.f_placeholder')?.value || "",
-      order: div.querySelector('.f_order')?.value || ""
+      order: div.querySelector('.f_order')?.value || "",
+      categoryName: div.querySelector('.f_category')?.value || ""
     }));
 
-  // SLA
-  const sla = Array.from(document.querySelectorAll('#sla > div'))
+  const sla = Array.from(document.querySelectorAll('#sla .item-row'))
     .map(div => ({
       step: div.querySelector('.s_step')?.value || "",
       days: div.querySelector('.s_days')?.value || ""
     }));
 
-  const finalData = {
-    product,
-    categories,
-    inputFields: fields,
-    sla
-  };
+  const finalData = { product, categories, inputFields: fields, sla };
 
-  // console.log("FINAL DATA:", finalData); // 🔥 DEBUG
-
-fetch('api/product/create', {
+  fetch('/api/product/create', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(finalData)
   })
-  .then(() => {
-    console.log(finalData)
-    clearform()
-    alert("Data Submitted Successfully!");
+  .then(res => {
+    if (res.ok) {
+      alert("Product Configuration Saved Successfully!");
+      window.location.reload();
+    } else {
+      alert("Failed to save product. Please check console.");
+    }
   })
   .catch((err) => {
-    console.log(finalData)
-    alert(`Error: ${err.message}`);
+    alert(`Network Error: ${err.message}`);
   });
-
 });
-function clearform() {
-  document.getElementById("slug").value = "";
-  document.getElementById("label").value = "";
-  document.getElementById("is_active").value = "true";
-  document.getElementById("categories").innerHTML = "";
-  document.getElementById("fields").innerHTML = "";
-  document.getElementById("sla").innerHTML = "";
-  fieldCount = 0;
-  slaCount = 0;
-
-  console.log("Form cleared successfully");
-}
-
 </script>
 
 </body>

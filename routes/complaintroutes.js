@@ -4,6 +4,7 @@ const multer = require('multer')
 const complaintController = require('../controller/complaintController')
 const isLogedIn = require('../middleware/isLogedin')
 const isEmployee = require('../middleware/isEmployee')
+const isAdminOrEmployee = require('../middleware/isAdminOrEmployee')
 
 // Basic attachment upload config
 const attachmentController = require('../controller/attachmentController')
@@ -14,29 +15,56 @@ const upload = attachmentController.complaintAttachmentsUploadMiddleware(multer)
 router.post('/create', upload.array('docs', 5), complaintController.createComplaint)
 
 
+/**
+ * Employee: render "Add Update" page for a specific complaint
+ * URL: GET /complaint/addupdate/:complaintid
+ */
+router.get('/addupdate/:complaintid', isLogedIn, isEmployee, (req, res) => {
+  return res.render('addupdate', { complaintId: req.params.complaintid });
+});
+
 // add complaint updates
-router.post('/addupdate/:complaintid',complaintController.addcomplaintupdate)
+router.post('/addupdate/:complaintid', isLogedIn, isEmployee, upload.array('attachments', 5), complaintController.addcomplaintupdate)
+
+/**
+ * Support: render "Verify & Assign" page
+ */
+router.get('/verify/:complaintid', isLogedIn, isEmployee, (req, res) => {
+  return res.render('supportDetails', { 
+    complaintId: req.params.complaintid,
+    userRole: req.user.role 
+  });
+});
+
+/**
+ * Support: process verification and assignment
+ */
+router.post('/verify/:complaintid', isLogedIn, isAdminOrEmployee, complaintController.verifyComplaint);
+
+
 
 
 // GET /api/complaints?cnic=&mobile=&email=&name=
-router.get('/complaints', isLogedIn, isEmployee,complaintController.getAllComplaints)
+router.get('/complaints', isLogedIn, isAdminOrEmployee, complaintController.getAllComplaints)
 
 // Employee: complaint details page
 // router.get('/complaintDetails/:complaintNumber', isLogedIn, isEmployee, (req, res) => {
 //     res.render('supportD');
 // });
 
-// Employee: get single complaint (JSON)
-router.get('/complaints/:_id', isLogedIn, isEmployee, complaintController.getComplaintWithAllData)
+// Employee/Admin: get single complaint (JSON)
+router.get('/complaints/:_id', isLogedIn, isAdminOrEmployee, complaintController.getComplaintWithAllData)
 
 // Optional: SLA preview endpoint
 router.get('/sla', isLogedIn, isEmployee, complaintController.getsla);
 
-// Employee: list unique departments
-router.get('/departments', isLogedIn, isEmployee, complaintController.getdepartments)
+// Employee/Admin: list unique departments
+router.get('/departments', isLogedIn, isAdminOrEmployee, complaintController.getdepartments)
 
-// Employess list under specific department
-router.get('/employees', isLogedIn, isEmployee, complaintController.getemployees);
+// Employee/Admin: list employees
+router.get('/employees', isLogedIn, isAdminOrEmployee, complaintController.getemployees)
 
+// Customer: list my complaints
+router.get('/myComplaints', isLogedIn, complaintController.getMyComplaints);
 
 module.exports = router

@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Complaint Details | HBL</title>
+  <title>Complaint Details</title>
 
   <style>
 
@@ -16,8 +16,8 @@
     }
 
     body{
-      font-family:'Segoe UI',sans-serif;
-      background:#f4f7f6;
+      font-family:Arial, sans-serif;
+      background:#f4f6f9;
       padding:25px;
       color:#333;
     }
@@ -27,162 +27,135 @@
       margin:auto;
     }
 
-    .topbar{
+    .header{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      margin-bottom:25px;
+      margin-bottom:20px;
+    }
+
+    .header h1{
+      color:#008269;
     }
 
     .back-btn{
       text-decoration:none;
-      color:#008269;
-      font-weight:bold;
-    }
-
-    .badge{
       background:#008269;
       color:white;
-      padding:8px 16px;
-      border-radius:20px;
-      font-size:.85rem;
-      font-weight:bold;
+      padding:10px 18px;
+      border-radius:6px;
     }
 
     .card{
       background:white;
-      border-radius:10px;
       padding:25px;
-      margin-bottom:25px;
-      box-shadow:0 2px 10px rgba(0,0,0,.06);
+      border-radius:10px;
+      margin-bottom:20px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
     }
 
-    h2{
+    .card h2{
+      margin-bottom:20px;
       color:#008269;
-      margin-bottom:20px;
-    }
-
-    h3{
-      margin-bottom:20px;
-      color:#444;
+      border-bottom:1px solid #eee;
+      padding-bottom:10px;
     }
 
     .grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:20px;
+      gap:15px;
     }
 
-    .info{
-      margin-bottom:18px;
+    .box{
+      background:#fafafa;
+      border:1px solid #e5e5e5;
+      padding:15px;
+      border-radius:8px;
     }
 
     .label{
-      font-size:.85rem;
-      color:#777;
-      font-weight:bold;
-      margin-bottom:5px;
-      display:block;
+      font-size:13px;
+      color:#666;
+      margin-bottom:6px;
     }
 
     .value{
-      font-size:1rem;
-      color:#222;
-    }
-
-    .description-box{
-      background:#fafafa;
-      border:1px solid #eee;
-      padding:15px;
-      border-radius:6px;
-      white-space:pre-wrap;
-      line-height:1.6;
-    }
-
-    select,
-    textarea,
-    input{
-      width:100%;
-      padding:12px;
-      border:1px solid #ccc;
-      border-radius:6px;
-      margin-top:5px;
-    }
-
-    textarea{
-      min-height:120px;
-      resize:vertical;
-    }
-
-    .btn{
-      border:none;
-      padding:14px 22px;
-      border-radius:6px;
+      font-size:15px;
       font-weight:bold;
-      cursor:pointer;
+      word-break:break-word;
     }
 
-    .btn-primary{
-      background:#008269;
-      color:white;
+    .description{
+      background:#fafafa;
+      padding:18px;
+      border-radius:8px;
+      line-height:1.7;
+      border:1px solid #eee;
     }
 
-    .btn-danger{
-      background:#e53935;
-      color:white;
-    }
-
-    .btn-update{
-      background:#4caf50;
-      color:white;
-      width:100%;
-    }
-
-    .actions{
-      display:flex;
-      gap:15px;
-      margin-top:25px;
-    }
-
-    .attachment-link{
+    .attachment{
       display:block;
-      margin-bottom:10px;
       text-decoration:none;
       color:#008269;
-      font-weight:600;
+      padding:12px;
+      background:#f8f8f8;
+      border-radius:6px;
+      margin-bottom:10px;
+      border:1px solid #ddd;
     }
 
-    .status-pill{
+    .attachment:hover{
+      background:#eefaf7;
+    }
+
+    .status{
       display:inline-block;
-      padding:6px 12px;
-      border-radius:20px;
       background:#e8f5e9;
       color:#2e7d32;
-      font-size:.85rem;
+      padding:5px 12px;
+      border-radius:20px;
+      font-size:13px;
       font-weight:bold;
     }
 
-    .update-card{
-      border-left:4px solid #008269;
-      background:#fafafa;
-      padding:15px;
-      margin-bottom:15px;
-      border-radius:6px;
-    }
-
-    .loading{
+    #loading{
       text-align:center;
-      padding:60px;
-      font-size:1.1rem;
+      font-size:22px;
+      margin-top:50px;
     }
 
-    .error{
-      background:#ffebee;
-      color:#c62828;
-      padding:15px;
-      border-radius:6px;
-      margin-bottom:20px;
-      display:none;
+    @media(max-width:768px){
+
+      .grid{
+        grid-template-columns:1fr;
+      }
+
+      .header{
+        flex-direction:column;
+        gap:15px;
+        align-items:flex-start;
+      }
+
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .form-group select, .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: white;
     }
 
   </style>
@@ -193,222 +166,128 @@
 
 <div class="container">
 
-  <div class="topbar">
+  <!-- HEADER -->
 
-    <a href="/employeeDashboard" class="back-btn">
-      ← Back to Dashboard
+  <div class="header">
+
+    <h1>
+      Complaint Details
+    </h1>
+
+    <a
+      href="<%= userRole === 'admin' ? '/adminDashboard' : '/supportDashboard' %>"
+      class="back-btn"
+    >
+      Back
     </a>
 
-    <div class="badge">
-      SUPPORT PORTAL
-    </div>
-
   </div>
 
-  <div id="error" class="error"></div>
+  <!-- LOADING -->
 
-  <div id="loading" class="loading">
-    Loading complaint details...
+  <div id="loading">
+    Loading complaint...
   </div>
+
+  <!-- CONTENT -->
 
   <div id="content" style="display:none;">
 
-    <!-- Complaint Info -->
+    <!-- BASIC INFO -->
 
     <div class="card">
 
-      <h2>
-        Complaint #
-        <span id="complaintNumber"></span>
+      <h2 id="complaintNumber">
+        Complaint
       </h2>
 
-      <div class="grid">
+      <div
+        class="grid"
+        id="basicInfo"
+      ></div>
 
-        <div>
+    </div>
 
-          <div class="info">
-            <span class="label">Customer Name</span>
-            <div class="value" id="name"></div>
+    <!-- DESCRIPTION -->
+
+    <div class="card">
+
+      <h2>Description</h2>
+
+      <div
+        id="description"
+        class="description"
+      ></div>
+
+    </div>
+
+    <!-- DETAILS -->
+
+    <div class="card">
+
+      <h2>Additional Details</h2>
+
+      <div
+        class="grid"
+        id="details"
+      ></div>
+
+    </div>
+
+    <!-- ATTACHMENTS -->
+
+    <div class="card">
+
+      <h2>Attachments</h2>
+
+      <div id="attachments"></div>
+
+    </div>
+
+    <% if (userRole !== 'admin') { %>
+    <!-- VERIFICATION FORM -->
+    <div class="card">
+      <h2>Verify & Assign</h2>
+      <form id="verifyForm">
+        <div class="grid">
+          <div class="form-group">
+            <label>Verification Status</label>
+            <select id="verificationStatus" name="verificationStatus" required>
+              <option value="Pending">Pending</option>
+              <option value="Verified">Verified</option>
+              <option value="Rejected">Rejected</option>
+            </select>
           </div>
-
-          <div class="info">
-            <span class="label">CNIC</span>
-            <div class="value" id="cnic"></div>
+          <div class="form-group">
+            <label>Priority</label>
+            <select id="priority" name="priority">
+              <option value="Low">Low</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="High">High</option>
+              <option value="Critical">Critical</option>
+            </select>
           </div>
-
-          <div class="info">
-            <span class="label">Mobile</span>
-            <div class="value" id="mobile"></div>
+          <div class="form-group">
+            <label>Assign to Department</label>
+            <select id="assignedDepartment" name="assignedDepartment">
+              <option value="">Select Department</option>
+            </select>
           </div>
-
-          <div class="info">
-            <span class="label">Email</span>
-            <div class="value" id="email"></div>
+          <div class="form-group">
+            <label>Assign to Employee</label>
+            <select id="assignedTo" name="assignedTo">
+              <option value="">Select Employee</option>
+            </select>
           </div>
-
         </div>
-
-        <div>
-
-          <div class="info">
-            <span class="label">Product Type</span>
-            <div class="value" id="productType"></div>
-          </div>
-
-          <div class="info">
-            <span class="label">Category</span>
-            <div class="value" id="category"></div>
-          </div>
-
-          <div class="info">
-            <span class="label">Current Step</span>
-            <div class="value">
-              <span id="currentStepBadge" class="status-pill"></span>
-            </div>
-          </div>
-
-          <div class="info">
-            <span class="label">Priority</span>
-            <div class="value" id="priorityText"></div>
-          </div>
-
+        <div class="form-group" style="margin-top:15px;">
+          <label>Internal Notes</label>
+          <textarea id="internalNotes" name="internalNotes" style="width:100%; height:80px; padding:10px; border-radius:6px; border:1px solid #ccc; font-family: inherit;"></textarea>
         </div>
-
-      </div>
-
+        <button type="submit" class="back-btn" style="border:none; cursor:pointer; margin-top:10px; width:100%; font-size: 16px; font-weight: bold;">Submit Verification</button>
+      </form>
     </div>
-
-    <!-- Description -->
-
-    <div class="card">
-
-      <h3>Description</h3>
-
-      <div id="description" class="description-box"></div>
-
-    </div>
-
-    <!-- Dynamic Details -->
-
-    <div class="card">
-
-      <h3>Additional Details</h3>
-
-      <div id="detailsContainer" class="grid"></div>
-
-    </div>
-
-    <!-- Attachments -->
-
-    <div class="card">
-
-      <h3>Attachments</h3>
-
-      <div id="attachmentsContainer"></div>
-
-    </div>
-
-    <!-- Complaint Management -->
-
-    <div class="card">
-
-      <h3>Complaint Management</h3>
-
-      <div class="grid">
-
-        <div>
-
-          <label>Verification Status</label>
-
-          <select id="verificationStatus">
-            <option value="Pending">Pending</option>
-            <option value="Verified">Verified</option>
-            <option value="Rejected">Rejected</option>
-          </select>
-
-        </div>
-
-        <div>
-
-          <label>Priority</label>
-
-          <select id="priority">
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-            <option value="Critical">Critical</option>
-          </select>
-
-        </div>
-
-      </div>
-
-      <br>
-
-      <label>Current Process Step</label>
-
-      <select id="currentStep">
-        <option value="Submitted">Submitted</option>
-        <option value="Under Verification">Under Verification</option>
-        <option value="Assigned">Assigned</option>
-        <option value="In Progress">In Progress</option>
-        <option value="Resolved">Resolved</option>
-        <option value="Closed">Closed</option>
-      </select>
-
-    </div>
-
-    <!-- Add Update -->
-
-    <div class="card">
-
-      <h3>Add Update</h3>
-
-      <label>Status</label>
-
-      <select id="updateStatus">
-        <option value="Under Verification">Under Verification</option>
-        <option value="In Progress">In Progress</option>
-        <option value="Resolved">Resolved</option>
-        <option value="Closed">Closed</option>
-      </select>
-
-      <br><br>
-
-      <label>Resolution Notes</label>
-
-      <textarea
-        id="resolutionNotes"
-        placeholder="Write complaint progress..."
-      ></textarea>
-
-      <br><br>
-
-      <label>Attachment</label>
-
-      <input type="file" id="attachment">
-
-      <br><br>
-
-      <button id="addUpdateBtn" class="btn btn-update">
-        Add Update
-      </button>
-
-    </div>
-
-    <!-- Actions -->
-
-    <div class="actions">
-
-      <button id="saveBtn" class="btn btn-primary">
-        Save Changes
-      </button>
-
-      <button id="deleteBtn" class="btn btn-danger">
-        Delete Complaint
-      </button>
-
-    </div>
+    <% } %>
 
   </div>
 
@@ -419,24 +298,51 @@
 const complaintId =
 window.location.pathname.split('/').pop();
 
-const el = (id) =>
-document.getElementById(id);
+
+
+// SHORTCUT
+
+function el(id){
+
+  return document.getElementById(id);
+
+}
+
+
 
 // SAFE VALUE
 
 function safe(value){
 
-  if(
-    value === undefined ||
-    value === null ||
-    value === ''
-  ){
-    return '-';
-  }
-
-  return value;
+  return value || '-';
 
 }
+
+
+
+// CREATE BOX
+
+function createBox(label,value){
+
+  return `
+
+    <div class="box">
+
+      <div class="label">
+        ${label}
+      </div>
+
+      <div class="value">
+        ${safe(value)}
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
 
 // LOAD COMPLAINT
 
@@ -444,299 +350,18 @@ async function loadComplaint(){
 
   try{
 
-    const res = await fetch(
-      `/complaint/complaints/${complaintId}`
-    );
-
-    if(!res.ok){
-
-      throw new Error(
-        'Failed to load complaint'
-      );
-
-    }
-
     const response =
-      await res.json();
-
-    console.log(response);
-
-    // BACKEND MAY RETURN:
-    // { success:true, complaint:{} }
-
-    const data =
-      response.complaint || response;
-
-    // =========================
-    // BASIC INFORMATION
-    // =========================
-
-    el('complaintNumber').textContent =
-      safe(data.complaintNumber);
-
-    el('name').textContent =
-      safe(data.name);
-
-    el('cnic').textContent =
-      safe(data.cnic);
-
-    el('mobile').textContent =
-      safe(data.mobile);
-
-    el('email').textContent =
-      safe(data.email);
-
-    el('productType').textContent =
-      safe(data.productType);
-
-    el('category').textContent =
-      safe(data.category);
-
-    el('description').textContent =
-      safe(data.description);
-
-    el('currentStepBadge').textContent =
-      safe(data.currentStep);
-
-    el('priorityText').textContent =
-      safe(data.priority);
-
-    // =========================
-    // SELECT VALUES
-    // =========================
-
-    el('verificationStatus').value =
-      data.verificationStatus || 'Pending';
-
-    el('priority').value =
-      data.priority || 'Medium';
-
-    el('currentStep').value =
-      data.currentStep || 'Submitted';
-
-    // =========================
-    // DYNAMIC DETAILS
-    // =========================
-
-    const detailsContainer =
-      el('detailsContainer');
-
-    detailsContainer.innerHTML = '';
-
-    // CASE 1
-    // IF BACKEND RETURNS data.details
-
-    if(
-      data.details &&
-      typeof data.details === 'object'
-    ){
-
-      Object.entries(data.details).forEach(
-
-        ([key,value]) => {
-
-          detailsContainer.innerHTML += `
-
-            <div class="info">
-
-              <span class="label">
-
-                ${key}
-
-              </span>
-
-              <div class="value">
-
-                ${safe(value)}
-
-              </div>
-
-            </div>
-
-          `;
-
-        }
-
+      await fetch(
+        `/complaint/complaints/${complaintId}`
       );
 
-    }
+    const result =
+      await response.json();
 
-    // CASE 2
-    // IF BACKEND RETURNS dynamicFields
+    const c =
+      result.complaint;
 
-    else if(
-      data.dynamicFields &&
-      Array.isArray(data.dynamicFields)
-    ){
-
-      data.dynamicFields.forEach(field => {
-
-        detailsContainer.innerHTML += `
-
-          <div class="info">
-
-            <span class="label">
-
-              ${safe(field.label)}
-
-            </span>
-
-            <div class="value">
-
-              ${safe(field.value)}
-
-            </div>
-
-          </div>
-
-        `;
-
-      });
-
-    }
-
-    else{
-
-      detailsContainer.innerHTML = `
-        <div>No additional details available</div>
-      `;
-
-    }
-
-    // =========================
-    // ATTACHMENTS
-    // =========================
-
-    const attachmentContainer =
-      el('attachmentsContainer');
-
-    attachmentContainer.innerHTML = '';
-
-    // CASE 1
-    // attachments array
-
-    if(
-      data.attachments &&
-      data.attachments.length > 0
-    ){
-
-      data.attachments.forEach(file => {
-
-        // STRING FILE
-
-        if(typeof file === 'string'){
-
-          attachmentContainer.innerHTML += `
-
-            <a
-              href="/uploads/${file}"
-              target="_blank"
-              class="attachment-link"
-            >
-
-              ${file}
-
-            </a>
-
-          `;
-
-        }
-
-        // OBJECT FILE
-
-        else{
-
-          attachmentContainer.innerHTML += `
-
-            <a
-              href="/uploads/${file.filename}"
-              target="_blank"
-              class="attachment-link"
-            >
-
-              ${safe(file.originalname || file.filename)}
-
-            </a>
-
-          `;
-
-        }
-
-      });
-
-    }
-
-    else{
-
-      attachmentContainer.innerHTML = `
-        <div>No attachments available</div>
-      `;
-
-    }
-
-    // =========================
-    // UPDATES HISTORY
-    // =========================
-
-    // OPTIONAL SECTION
-
-    if(data.updates){
-
-      const updateSection =
-        document.createElement('div');
-
-      updateSection.className =
-        'card';
-
-      updateSection.innerHTML = `
-        <h3>Updates History</h3>
-      `;
-
-      data.updates.forEach(update => {
-
-        updateSection.innerHTML += `
-
-          <div class="update-card">
-
-            <div>
-
-              <strong>Status:</strong>
-
-              ${safe(update.status)}
-
-            </div>
-
-            <div style="margin-top:8px;">
-
-              <strong>Note:</strong>
-
-              ${safe(update.resolationnote)}
-
-            </div>
-
-            <div style="margin-top:8px; color:#666; font-size:.9rem;">
-
-              ${new Date(
-                update.createdAt
-              ).toLocaleString()}
-
-            </div>
-
-          </div>
-
-        `;
-
-      });
-
-      el('content').appendChild(
-        updateSection
-      );
-
-    }
-
-    // =========================
     // SHOW CONTENT
-    // =========================
 
     el('loading').style.display =
       'none';
@@ -744,271 +369,219 @@ async function loadComplaint(){
     el('content').style.display =
       'block';
 
+    // COMPLAINT NUMBER
+
+    el('complaintNumber').innerText =
+      `Complaint # ${c.complaintNumber}`;
+
+    // BASIC INFO
+
+    el('basicInfo').innerHTML =
+
+      createBox('Customer Name',c.name) +
+
+      createBox('CNIC',c.cnic) +
+
+      createBox('Mobile',c.mobile) +
+
+      createBox('Email',c.email) +
+
+      createBox('Product Type',c.productType) +
+
+      createBox('Category',c.category) +
+
+      createBox(
+        'Current Status',
+
+        `<span class="status">
+          ${safe(c.currentStep)}
+        </span>`
+      ) +
+
+      createBox('Priority',c.priority) +
+
+      createBox(
+        'Verification Status',
+        c.verificationStatus
+      ) +
+
+      createBox(
+        'Department',
+        c.assignedDepartment
+      ) +
+
+      createBox(
+        'Assigned To',
+        c.assignedTo?.name
+      );
+
+    // DESCRIPTION
+
+    el('description').innerText =
+      safe(c.description);
+
+    // DETAILS
+
+    let detailsHTML = '';
+
+    for(let key in c.details){
+
+      detailsHTML += createBox(
+
+        key.replaceAll('_',' '),
+
+        c.details[key]
+
+      );
+
+    }
+
+    el('details').innerHTML =
+      detailsHTML;
+
+    // ATTACHMENTS
+
+    let filesHTML = '';
+
+    if(c.attachments){
+
+      c.attachments.forEach(file => {
+
+        filesHTML += `
+
+          <a
+            href="/uploads/${file}"
+            target="_blank"
+            class="attachment"
+          >
+
+            📎 ${file}
+
+          </a>
+
+        `;
+
+      });
+
+    }
+
+    if(c.supportingDocs){
+
+      c.supportingDocs.forEach(file => {
+
+        filesHTML += `
+
+          <a
+            href="/uploads/${file}"
+            target="_blank"
+            class="attachment"
+          >
+
+            📄 ${file}
+
+          </a>
+
+        `;
+
+      });
+
+    }
+
+    if(filesHTML === ''){
+
+      filesHTML =
+        '<div>No attachments available</div>';
+
+    }
+
+    el('attachments').innerHTML =
+      filesHTML;
+
   }
 
-  catch(err){
+  catch(error){
 
-    console.error(err);
+    console.log(error);
 
-    el('loading').style.display =
-      'none';
-
-    el('error').style.display =
-      'block';
-
-    el('error').textContent =
-      err.message;
+    el('loading').innerText =
+      'Failed to load complaint';
 
   }
 
 }
 
-// =========================
-// SAVE CHANGES
-// =========================
 
-el('saveBtn').addEventListener(
 
-  'click',
-
-  async () => {
-
-    try{
-
-      const payload = {
-
-        verificationStatus:
-          el('verificationStatus').value,
-
-        priority:
-          el('priority').value,
-
-        currentStep:
-          el('currentStep').value
-
-      };
-
-      const res = await fetch(
-
-        `/complaint/complaints/${complaintId}/action`,
-
-        {
-
-          method:'POST',
-
-          headers:{
-            'Content-Type':'application/json'
-          },
-
-          body:JSON.stringify(payload)
-
-        }
-
-      );
-
-      const result =
-        await res.json();
-
-      if(result.success){
-
-        alert(
-          result.message ||
-          'Complaint updated successfully'
-        );
-
-        location.reload();
-
-      }
-      else{
-
-        alert(
-          result.message ||
-          'Failed to update complaint'
-        );
-
-      }
-
-    }
-
-    catch(err){
-
-      console.error(err);
-
-      alert(
-        'Error saving complaint'
-      );
-
-    }
-
-  }
-
-);
-
-// =========================
-// DELETE
-// =========================
-
-el('deleteBtn').addEventListener(
-
-  'click',
-
-  async () => {
-
-    const confirmDelete =
-      confirm(
-        'Are you sure you want to delete this complaint?'
-      );
-
-    if(!confirmDelete){
-      return;
-    }
-
-    try{
-
-      const res = await fetch(
-
-        `/complaint/complaints/${complaintId}/delete`,
-
-        {
-          method:'DELETE'
-        }
-
-      );
-
-      const result =
-        await res.json();
-
-      if(result.success){
-
-        alert(
-          result.message ||
-          'Complaint deleted'
-        );
-
-        window.location.href =
-          '/employeeDashboard';
-
-      }
-      else{
-
-        alert(
-          result.message ||
-          'Failed to delete complaint'
-        );
-
-      }
-
-    }
-
-    catch(err){
-
-      console.error(err);
-
-      alert(
-        'Error deleting complaint'
-      );
-
-    }
-
-  }
-
-);
-
-// =========================
-// ADD UPDATE
-// =========================
-
-el('addUpdateBtn').addEventListener(
-
-  'click',
-
-  async () => {
-
-    try{
-
-      const formData =
-        new FormData();
-
-      formData.append(
-
-        'status',
-
-        el('updateStatus').value
-
-      );
-
-      formData.append(
-
-        'resolationnote',
-
-        el('resolutionNotes').value
-
-      );
-
-      const file =
-        el('attachment').files[0];
-
-      if(file){
-
-        formData.append(
-          'attachment',
-          file
-        );
-
-      }
-
-      const res = await fetch(
-
-        `/complaint/addupdate/${complaintId}`,
-
-        {
-          method:'POST',
-          body:formData
-        }
-
-      );
-
-      const result =
-        await res.json();
-
-      if(result.success){
-
-        alert(
-          result.message ||
-          'Update added successfully'
-        );
-
-        location.reload();
-
-      }
-      else{
-
-        alert(
-          result.message ||
-          'Failed to add update'
-        );
-
-      }
-
-    }
-
-    catch(err){
-
-      console.error(err);
-
-      alert(
-        'Error adding update'
-      );
-
-    }
-
-  }
-
-);
+const userRole = '<%= userRole %>';
 
 // INITIAL LOAD
 
 loadComplaint();
+
+if (userRole !== 'admin') {
+    // LOAD DEPARTMENTS
+    async function loadDepartments(){
+      try {
+        const res = await fetch('/complaint/departments');
+        const departments = await res.json();
+        const deptSelect = el('assignedDepartment');
+        departments.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d;
+          opt.textContent = d;
+          deptSelect.appendChild(opt);
+        });
+      } catch (e) { console.error('Failed to load departments', e); }
+    }
+
+    loadDepartments();
+
+    // LOAD EMPLOYEES ON DEPT CHANGE
+    el('assignedDepartment').addEventListener('change', async (e) => {
+      const dept = e.target.value;
+      const empSelect = el('assignedTo');
+      empSelect.innerHTML = '<option value="">Select Employee</option>';
+      
+      if(!dept) return;
+
+      try {
+        const res = await fetch(`/complaint/employees?department=${encodeURIComponent(dept)}`);
+        const employees = await res.json();
+        employees.forEach(emp => {
+          const opt = document.createElement('option');
+          opt.value = emp._id;
+          opt.textContent = `${emp.name} (${emp.designation})`;
+          empSelect.appendChild(opt);
+        });
+      } catch (e) { console.error('Failed to load employees', e); }
+    });
+
+    // FORM SUBMISSION
+    el('verifyForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      
+      try {
+        const res = await fetch(`/complaint/verify/${complaintId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        
+        if (res.ok) {
+          alert('Complaint verified and assigned successfully!');
+          window.location.href = '/supportDashboard';
+        } else {
+          const err = await res.json();
+          alert('Error: ' + err.message);
+        }
+      } catch (err) {
+        alert('Network error');
+      }
+    });
+}
 
 </script>
 

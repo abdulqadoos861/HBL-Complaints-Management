@@ -3,18 +3,46 @@ const employee = require('../models/employee');
 const Employee = require('../models/employee');
 const Sla = require('../models/sla');
 const updateModel = require('../models/update')
+const jwt = require('jsonwebtoken')
+const User = require('../models/user');
 
-
-async function getEmployeeDetails(userid){
-    const employee = await Employee.findOne({user : userid})
-    if (!employee){
-        return " "
-    }
+async function getcurrentemployee(req){
+   const token = req.cookies.token;
+   if (!token){
+            console.log('no token Exists')
+            return res.render('login')
+        }
     else{
-        return employee
+        const data = jwt.verify(token , process.env.JWT_KEY);
+            console.log(data)
+            const username = data.username;
+            const user = await User.findOne({username: username});
+            const cur_employee = await Employee.findOne({user:user._id})
+            if (!cur_employee){
+              console.log("No employee exist");  
+              return ""
+            }
+            else{
+              return curr_employee;
+            }
     }
+   
 }
 
+async function getcurrentuser(req){
+  const token = req.cookies.token;
+   if (!token){
+            console.log('no token Exists')
+            return res.render('login')
+        }
+    else{
+        const data = jwt.verify(token , process.env.JWT_KEY);
+            console.log(data)
+            const username = data.username;
+            console.log(username)
+            return username
+          }
+}
 
 exports.createComplaint = async function(req, res) {
     try {
@@ -151,27 +179,6 @@ const buildComplaintResponse = (complaint) => {
   }
 }
 
-
-// exports.getComplaintWithAllData = async function (req, res) {
-//   try {
-//     const { _id } = req.params
-
-//     if (!_id) {
-//       return res.status(400).json({ message: 'complaintNumber is required' })
-//     }
-
-//     const complaint = await Complaint.findOne({_id : _id }).lean()
-//     if (!complaint) {
-//       return res.status(404).json({ message: 'No complaint found for this number' })
-//     }
-
-//     return res.status(200).json(buildComplaintResponse(complaint))
-//   } catch (err) {
-//     return res.status(500).json({ message: 'Failed to get complaint', error: err.message })
-//   }
-// }
-
-
 exports.getAllComplaints = async function (req, res) {
   try {
     const { cnic, mobile, email, name } = req.query
@@ -190,7 +197,7 @@ exports.getAllComplaints = async function (req, res) {
 
     // Role-based filtering
     if (employee) {
-      if (employee.department === 'Support') {
+      if (employee.department && employee.department.trim().toLowerCase() === 'support') {
         // Support only sees unverified complaints by default
         filter.verificationStatus = 'Pending';
       } else {
@@ -201,6 +208,9 @@ exports.getAllComplaints = async function (req, res) {
           { resolutionAssignedTo: employee._id }
         ];
       }
+    } else if (req.user.role === 'admin') {
+        // Admin sees all complaints by default, filter object stays as is (empty or just query params)
+        console.log('Admin accessing all complaints');
     }
 
     const complaints = await Complaint.find(filter).sort({ createdAt: -1 }).lean()
@@ -213,93 +223,216 @@ exports.getAllComplaints = async function (req, res) {
 
 
 exports.getComplaintWithAllData = async function (req, res) {
-
   try {
-
-    const complaintId = req.params._id;
-
-    if (!complaintId) {
-
-      return res.status(400).json({
-        success: false,
-        message: 'Complaint ID is required'
-      });
-
+    const idParam = req.params._id || req.params.complaintNumber;
+    console.log('Fetching details for Complaint ID/Number:', idParam);
+    
+    // Try finding by ID first, then by complaintNumber
+    let complaint = null;
+    try {
+      complaint = await Complaint.findById(idParam)
+        .populate('assignedTo', 'name department designation')
+        .populate('verificationAssignedTo', 'name department designation')
+        .populate('resolutionAssignedTo', 'name department designation')
+        .lean();
+      
+      if (complaint) console.log('Found complaint by ID');
+    } catch (e) {
+      console.log('Not a valid ObjectId, searching by complaintNumber instead');
     }
-
-    const complaint = await Complaint.findById({_id : complaintId})
-
-      .populate('assignedTo', 'name department designation')
-      .populate('verificationAssignedTo', 'name department designation')
-      .populate('resolutionAssignedTo', 'name department designation')
-
-      .lean();
 
     if (!complaint) {
-
-      return res.status(404).json({
-        success: false,
-        message: 'Complaint not found'
-      });
-
+      complaint = await Complaint.findOne({ complaintNumber: idParam })
+        .populate('assignedTo', 'name department designation')
+        .populate('verificationAssignedTo', 'name department designation')
+        .populate('resolutionAssignedTo', 'name department designation')
+        .lean();
+      
+      if (complaint) console.log('Found complaint by Number');
     }
+
+    if (!complaint) {
+      console.log('Complaint NOT found in database');
+      return res.status(404).json({ success: false, message: 'Complaint not found' });
+    }
+
+    // Fetch update history
+    const updates = await updateModel.find({ complaintId: complaint._id })
+      .populate('updatedBy', 'username role')
+      .sort({ createdAt: -1 })
+      .lean();
 
     return res.status(200).json({
       success: true,
-      complaint
+      complaint,
+      updates
     });
 
-  }
-
-  catch (err) {
-
-    console.error(err);
-
+  } catch (err) {
+    console.error('CRITICAL ERROR in getComplaintWithAllData:', err);
     return res.status(500).json({
       success: false,
-      message: 'Failed to get complaint',
+      message: 'Failed to get complaint details due to server error',
       error: err.message
     });
-
   }
-
 }
 
-exports.addcomplaintupdate = async function(req,res){
+
+
+exports.addcomplaintupdate = async function (req, res) {
+    if (req.user.role === 'admin') {
+        return res.status(403).json({ success: false, message: 'Admins have read-only access to complaints.' });
+    }
     const complaintId = req.params.complaintid;
-    const {status , userid , attachment,previousstatus, resolationnote} = req.body;
+    const { status, attachment, previousstatus, resolationnote } = req.body;
+
     if(!complaintId){
         return res.status(400).json({
             success: false,
             message: "Complaint ID is required"
-        })
+        });
     }
-    const existed = await Complaint.findOne({_id : complaintId})
+
+    const existed = await Complaint.findOne({ _id: complaintId });
     if(!existed){
         return res.status(400).json({
             success: false,
             message: "Complaint ID is required"
-        })
-    }
-    const employeedata = getEmployeeDetails(userid);
-    const employeename = employeedata.name;
-    const update = await updateModel.create({
-        complaintId : complaintId,
-        status : status,
-        updatedBy : employeename,
-        attachments : attachment,
-        previousStatus : previousstatus,
-        resolutionNotes: resolationnote
-    })
-    if(!update){
-        return res.status(400).json("An eror occured while adding update.")
-    }
-    else{
-        return res.status(200).json({
-            message : `update added ${update}`
-        })
+        });
     }
 
+    let username =  await getcurrentuser(req)
+    console.log("username is printed bellow")
+    console.log(username)
     
+    const userDoc = await User.findOne({ username }).lean();
+    if(!userDoc){
+        return res.status(401).json({
+            success: false,
+            message: "User not found"
+        });
+    }
 
+    // Handle file uploads
+    let attachments = [];
+    if (req.files && req.files.length > 0) {
+        attachments = req.files.map(f => ({
+            fileName: f.filename,
+            fileUrl: `/uploads/${f.filename}`
+        }));
+    }
+
+    // This update schema references `User` in updatedBy
+    const updatePayload = {
+        complaintId,
+        status,
+        updatedBy: userDoc._id,
+        attachments,
+        previousStatus: previousstatus,
+        resolutionNotes: resolationnote
+    };
+
+    const update = await updateModel.create(updatePayload);
+
+    if(!update){
+        return res.status(400).json("An eror occured while adding update.");
+    }
+
+    // Also update the main complaint document's current status
+    await Complaint.findByIdAndUpdate(complaintId, { 
+        currentStep: status 
+    });
+
+    return res.status(200).json({
+        message : `update added ${update._id}`
+    });
 }
+
+exports.verifyComplaint = async function (req, res) {
+  try {
+    const complaintId = req.params.complaintid;
+    const { verificationStatus, assignedDepartment, assignedTo, priority, internalNotes } = req.body;
+
+    const updateData = {
+      verificationStatus,
+      assignedDepartment,
+      assignedTo,
+      priority,
+      internalNotes,
+      currentStep: verificationStatus === 'Verified' ? 'Assigned' : 'Closed'
+    };
+
+    const updated = await Complaint.findByIdAndUpdate(complaintId, updateData, { new: true });
+
+    if (!updated) {
+      return res.status(404).json({ message: 'Complaint not found' });
+    }
+
+    // Create a history record for this verification/assignment
+    try {
+      const userDoc = await User.findOne({ username: req.user.username });
+      await updateModel.create({
+        complaintId: updated._id,
+        status: updated.currentStep,
+        updatedBy: userDoc ? userDoc._id : null,
+        previousStatus: 'Submitted',
+        resolutionNotes: internalNotes || `Complaint ${verificationStatus} and assigned to ${assignedDepartment}.`
+      });
+    } catch (updateErr) {
+      console.error('Failed to create history record:', updateErr);
+      // We don't block the main response if history fails
+    }
+
+    return res.status(200).json({
+      message: 'Complaint verified and assigned successfully',
+      complaint: updated
+    });
+  } catch (e) {
+    return res.status(500).json({ message: 'Failed to verify complaint', error: e.message });
+  }
+};
+
+exports.customerReply = async function (req, res) {
+  try {
+    const { complaintId, response } = req.body;
+
+    const complaint = await Complaint.findById(complaintId);
+    if (!complaint) return res.status(404).json({ message: 'Complaint not found' });
+
+    // Create update record
+    await updateModel.create({
+      complaintId: complaint._id,
+      status: 'Submitted',
+      previousStatus: complaint.currentStep,
+      resolutionNotes: `CUSTOMER RESPONSE: ${response}`,
+      updatedBy: null // Public reply, or we could link to customer user if logged in
+    });
+
+    // Reset complaint status
+    complaint.currentStep = 'Submitted';
+    await complaint.save();
+
+    return res.status(200).json({ message: 'Response submitted successfully' });
+  } catch (e) {
+    return res.status(500).json({ message: 'Failed to submit response', error: e.message });
+  }
+};
+
+exports.getMyComplaints = async function (req, res) {
+    try {
+        const user = await User.findOne({ username: req.user.username });
+        if (!user) return res.redirect('/login');
+
+    const complaints = await Complaint.find({ email: user.email }).sort({ createdAt: -1 }).lean();
+    
+    if (req.originalUrl.startsWith('/api') || req.xhr) {
+      return res.status(200).json(complaints);
+    }
+    
+    res.render('myComplaints', { complaints });
+    } catch (e) {
+        console.error(e);
+        res.status(500).send('Internal Server Error');
+    }
+};

@@ -1,0 +1,51 @@
+<div class="space-y-8 animate-fade-in">
+  
+  <!-- Complaints List -->
+  <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+    <div class="px-8 py-6 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
+      <div>
+        <h3 class="text-xl font-black text-gray-900">Task Assignment Queue</h3>
+        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Items requiring your attention</p>
+      </div>
+      <button (click)="fetchMyComplaints()" class="p-2 hover:bg-[#008269]/10 text-[#008269] rounded-lg transition-all">
+        <i class="fas fa-sync-alt" [class.fa-spin]="isLoading"></i>
+      </button>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="bg-gray-50 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+          <tr>
+            <th class="px-8 py-4">ID</th>
+            <th class="px-8 py-4">Customer</th>
+            <th class="px-8 py-4">Product</th>
+            <th class="px-8 py-4">Status</th>
+            <th class="px-8 py-4">Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          <tr *ngFor="let c of complaints" class="hover:bg-gray-50/50 transition-colors">
+            <td class="px-8 py-5 font-mono font-bold text-[#008269] text-sm">{{ c.complaintNumber }}</td>
+            <td class="px-8 py-5 font-bold text-gray-800">{{ c.name }}</td>
+            <td class="px-8 py-5">
+              <span class="px-3 py-1 bg-gray-100 rounded-lg text-[10px] font-black uppercase text-gray-500">{{ c.productType }}</span>
+            </td>
+            <td class="px-8 py-5">
+              <span [ngClass]="getStatusClass(c.verificationStatus)" class="px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-tighter">
+                {{ c.verificationStatus }}
+              </span>
+            </td>
+            <td class="px-8 py-5">
+              <button (click)="onHandleCase(c._id)" class="px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-xl text-xs font-black transition-all">
+                Handle Case
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="complaints.length === 0 && !isLoading">
+            <td colspan="5" class="px-8 py-20 text-center text-gray-400 italic font-medium">No tasks currently assigned to you.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
