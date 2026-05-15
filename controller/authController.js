@@ -49,7 +49,6 @@ exports.login = async function (req, res) {
         }
     }
     catch (err) {
-        console.error(err);
         return res.status(500).json({ message: "An error occurred during login" });
     }
 }
@@ -95,7 +94,6 @@ exports.forgotPassword = async function (req, res) {
 
         return res.json({ success: true, message: "A 6-digit OTP has been sent to your email." });
     } catch (err) {
-        console.error('Forgot Password Error:', err);
         return res.status(500).json({ success: false, message: "An error occurred while sending OTP." });
     }
 };
@@ -126,7 +124,6 @@ exports.resetPassword = async function (req, res) {
 
         return res.json({ success: true, message: "Password has been reset successfully. You can now log in." });
     } catch (err) {
-        console.error('Reset Password Error:', err);
         return res.status(500).json({ success: false, message: "An error occurred while resetting password." });
     }
 };
@@ -221,7 +218,6 @@ exports.signup = async function (req, res) {
             customerId: customer_id
         });
     } catch (e) {
-        console.error(e);
         return res.status(500).json({
             message: "An error occurred during registration. Please try again."
         });
@@ -242,7 +238,6 @@ exports.getProfile = async function (req, res) {
 
         return res.status(200).json({ user, profileData });
     } catch (e) {
-        console.error(e);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -279,7 +274,6 @@ exports.updateProfile = async function (req, res) {
         }
         res.redirect('/profile?success=1');
     } catch (e) {
-        console.error(e);
         const isApi = req.originalUrl.startsWith('/api') || req.xhr;
         if (isApi) {
             return res.status(500).json({ success: false, message: 'Failed to update profile' });
@@ -326,7 +320,6 @@ exports.submitContact = async function (req, res) {
 
         return res.json({ success: true, message: 'Your message has been sent successfully!' });
     } catch (err) {
-        console.error('Contact Form Error:', err);
         return res.status(500).json({ success: false, message: 'Failed to send message. Please try again later.' });
     }
 };

@@ -26,7 +26,7 @@ export class ComplaintsComponent implements OnInit {
     this.isLoading = true;
     this.http.get<any[]>('http://localhost:3000/api/complaints', { withCredentials: true }).subscribe({
       next: (data) => {
-        console.log('Complaints Data Received:', data);
+        // console.log('Complaints Data Received:', data);
         this.complaints = data || [];
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -35,7 +35,7 @@ export class ComplaintsComponent implements OnInit {
         this.error = 'Failed to load complaints. Make sure you are logged in as an admin.';
         this.isLoading = false;
         this.cdr.detectChanges();
-        console.error('Error fetching complaints:', err);
+        // console.error('Error fetching complaints:', err);
       }
     });
   }

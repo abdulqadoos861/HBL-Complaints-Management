@@ -93,7 +93,7 @@ export class LoginComponent implements OnInit {
           text: msg,
           confirmButtonColor: '#008269'
         });
-        console.error('Login error:', err);
+        // console.error('Login error:', err);
       }
     });
   }

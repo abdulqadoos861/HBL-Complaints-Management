@@ -44,7 +44,7 @@ export class PublicRegisterComponent implements OnInit {
         this.products = res || [];
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Failed to load products', err)
+      // error: (err) => console.error('Failed to load products', err)
     });
   }
 

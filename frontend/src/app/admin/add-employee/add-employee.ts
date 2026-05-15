@@ -83,13 +83,12 @@ export class AddEmployeeComponent implements OnInit {
     this.http.get<any>('http://localhost:3000/api/admin/employees', { withCredentials: true }).subscribe({
       next: (response) => {
         if (response.ok) {
-          console.log('Employees list loaded:', response.employees.length);
           this.employeesList = response.employees;
           this.cdr.detectChanges(); // Force UI update
         }
       },
       error: (err) => {
-        console.error('Error fetching employees:', err);
+        // console.error('Error fetching employees:', err);
         this.cdr.detectChanges();
       }
     });
@@ -128,7 +127,7 @@ export class AddEmployeeComponent implements OnInit {
         this.isLoading = false;
         this.isError = true;
         this.message = err.error?.message || 'Failed to add employee. Please check your connection.';
-        console.error('Error adding employee:', err);
+        // console.error('Error adding employee:', err);
         this.cdr.detectChanges();
       }
     });

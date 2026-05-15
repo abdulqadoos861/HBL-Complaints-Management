@@ -45,7 +45,7 @@ export class ViewComplaintComponent implements OnInit {
     this.http.get<any>(`http://localhost:3000/api/complaints/${this.complaintId}`, { withCredentials: true }).subscribe({
       next: (response) => {
         if (response.success) {
-          console.log('Complaint Data Received:', response);
+          // console.log('Complaint Data Received:', response);
           this.complaintData = response.complaint;
           this.updates = response.updates || [];
           
@@ -74,7 +74,7 @@ export class ViewComplaintComponent implements OnInit {
   fetchDepartments() {
     this.http.get<string[]>('http://localhost:3000/api/departments', { withCredentials: true }).subscribe({
       next: (data) => this.departments = data,
-      error: (err) => console.error('Error fetching departments:', err)
+      // error: (err) => console.error('Error fetching departments:', err)
     });
   }
 
@@ -82,7 +82,7 @@ export class ViewComplaintComponent implements OnInit {
     if (!dept) return;
     this.http.get<any[]>(`http://localhost:3000/api/employees?department=${dept}`, { withCredentials: true }).subscribe({
       next: (data) => this.employees = data,
-      error: (err) => console.error('Error fetching employees:', err)
+      // error: (err) => console.error('Error fetching employees:', err)
     });
   }
 

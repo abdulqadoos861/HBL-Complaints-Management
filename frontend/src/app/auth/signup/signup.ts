@@ -90,7 +90,7 @@ export class SignupComponent {
       }
     } catch (error) {
       this.errorMessage = 'Could not connect to server. Is the backend running?';
-      console.error('Signup error:', error);
+      // console.error('Signup error:', error);
     }
   }
 }

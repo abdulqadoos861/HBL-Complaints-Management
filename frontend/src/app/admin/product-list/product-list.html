@@ -33,17 +33,7 @@
           <p class="text-[10px] font-mono font-black text-[#008269] tracking-tighter uppercase">{{ prod.slug }}</p>
         </div>
 
-        <div class="mt-6 pt-6 border-t border-gray-50 space-y-4">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400">
-              <i class="fas fa-tags text-xs"></i>
-            </div>
-            <div class="flex flex-col overflow-hidden">
-              <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Categories</span>
-              <span class="text-xs font-bold text-gray-700 truncate">{{ prod.categories?.join(', ') || 'None' }}</span>
-            </div>
-          </div>
-        </div>
+        
 
         <button (click)="toggleStatus(prod)" 
                 [class]="prod.is_active ? 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white' : 'bg-[#008269]/10 text-[#008269] hover:bg-[#008269] hover:text-white'"

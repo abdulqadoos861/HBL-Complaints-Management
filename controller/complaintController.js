@@ -9,7 +9,6 @@ const User = require('../models/user');
 async function getcurrentemployee(req){
     const token = req.cookies.token;
     if (!token){
-        console.log('no token Exists')
         return null;
     }
     else{
@@ -17,8 +16,7 @@ async function getcurrentemployee(req){
         const username = data.username;
         const user = await User.findOne({username: username});
         const cur_employee = await Employee.findOne({user:user._id})
-        if (!cur_employee){
-            console.log("No employee exist");  
+        if (!cur_employee){ 
             return null;
         }
         else{
@@ -30,7 +28,6 @@ async function getcurrentemployee(req){
 async function getcurrentuser(req){
     const token = req.cookies.token;
     if (!token){
-        console.log('no token Exists')
         return null;
     }
     else{
@@ -198,8 +195,6 @@ exports.getAllComplaints = async function (req, res) {
     if (name) filter.name = name;
 
     if (req.user.role === 'admin') {
-      // Admins can see all complaints (filtered by query params only)
-      console.log('Admin accessing complaints');
     } else if (req.user.role === 'employee') {
       const user = await User.findOne({ username: req.user.username });
       const employee = await Employee.findOne({ user: user._id });
@@ -228,7 +223,6 @@ exports.getAllComplaints = async function (req, res) {
     const complaints = await Complaint.find(filter).sort({ createdAt: -1 }).lean();
     return res.status(200).json(complaints.map(buildComplaintResponse));
   } catch (err) {
-    console.error('Error in getAllComplaints:', err);
     return res.status(500).json({ message: 'Failed to get complaints', error: err.message });
   }
 }
@@ -237,9 +231,6 @@ exports.getAllComplaints = async function (req, res) {
 exports.getComplaintWithAllData = async function (req, res) {
   try {
     const idParam = req.params._id || req.params.complaintNumber;
-    console.log('Fetching details for Complaint ID/Number:', idParam);
-    
-    // Try finding by ID first, then by complaintNumber
     let complaint = null;
     try {
       complaint = await Complaint.findById(idParam)
@@ -264,7 +255,6 @@ exports.getComplaintWithAllData = async function (req, res) {
     }
 
     if (!complaint) {
-      console.log('Complaint NOT found in database');
       return res.status(404).json({ success: false, message: 'Complaint not found' });
     }
 
@@ -281,7 +271,6 @@ exports.getComplaintWithAllData = async function (req, res) {
     });
 
   } catch (err) {
-    console.error('CRITICAL ERROR in getComplaintWithAllData:', err);
     return res.status(500).json({
       success: false,
       message: 'Failed to get complaint details due to server error',
@@ -315,7 +304,6 @@ exports.addcomplaintupdate = async function (req, res) {
     }
 
     let username = req.user.username;
-    console.log("username:", username);
     
     const userDoc = await User.findOne({ username }).lean();
     if(!userDoc){
@@ -499,13 +487,11 @@ exports.getMyComplaints = async function (req, res) {
         const complaints = await Complaint.find({ email: user.email }).sort({ createdAt: -1 }).lean();
         return res.status(200).json(complaints);
     } catch (e) {
-        console.error(e);
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
 
 exports.getAdminStats = async function (req, res) {
-  console.log('--- ADMIN DASHBOARD: FETCHING STATS ---');
   try {
     const total = await Complaint.countDocuments();
     const pending = await Complaint.countDocuments({ verificationStatus: 'Pending' });
@@ -527,8 +513,6 @@ exports.getAdminStats = async function (req, res) {
       })
       .lean();
 
-    console.log('Stats Result:', { total, pending, verified, resolved, updates: recentUpdates.length });
-
     return res.status(200).json({
       total,
       pending,
@@ -539,7 +523,6 @@ exports.getAdminStats = async function (req, res) {
       recentUpdates
     });
   } catch (err) {
-    console.error('CRITICAL: Admin Stats Error:', err);
     return res.status(500).json({ 
       message: 'Failed to fetch dashboard stats', 
       error: err.message,

@@ -29,7 +29,6 @@ export class ProductListComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('Failed to fetch products', err);
         this.cdr.detectChanges();
       }
     });

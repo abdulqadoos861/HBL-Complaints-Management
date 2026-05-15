@@ -81,7 +81,6 @@ async function addEmployee(req, res) {
       employee_id
     });
   } catch (err) {
-    console.error(err);
     return res.status(500).json({
       ok: false,
       message: 'Server error while adding employee'
@@ -97,7 +96,6 @@ async function getAllEmployees(req, res) {
       employees
     });
   } catch (err) {
-    console.error(err);
     return res.status(500).json({
       ok: false,
       message: 'Server error while fetching employees'
@@ -122,7 +120,6 @@ async function toggleEmployeeStatus(req, res) {
       message: `Employee account ${isActive ? 'activated' : 'deactivated'} successfully`
     });
   } catch (err) {
-    console.error(err);
     return res.status(500).json({
       ok: false,
       message: 'Server error while toggling employee status'

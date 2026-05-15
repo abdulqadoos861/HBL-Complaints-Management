@@ -57,7 +57,7 @@ export class RegisterComplaintComponent implements OnInit {
       error: (err) => {
         // 401 = not logged in (public user) — show manual input fields silently
         if (err.status !== 401) {
-          console.error('Failed to load profile', err);
+          // console.error('Failed to load profile', err);
         }
       }
     });
@@ -70,7 +70,7 @@ export class RegisterComplaintComponent implements OnInit {
         this.products = (res || []).filter(p => p.is_active !== false);
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Failed to load products', err)
+      // error: (err) => console.error('Failed to load products', err)
     });
   }
 
@@ -93,7 +93,7 @@ export class RegisterComplaintComponent implements OnInit {
         }).filter(Boolean);
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Failed to load categories', err)
+      // error: (err) => console.error('Failed to load categories', err)
     });
 
     // Load Dynamic Fields
@@ -107,7 +107,7 @@ export class RegisterComplaintComponent implements OnInit {
         });
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Failed to load dynamic fields', err)
+      // error: (err) => console.error('Failed to load dynamic fields', err)
     });
   }
 

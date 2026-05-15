@@ -29,7 +29,7 @@ export class EmployeeListComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('Error fetching employees:', err);
+        // console.error('Error fetching employees:', err);
         this.isLoading = false;
         this.errorMessage = 'Failed to load employees list.';
         this.cdr.detectChanges();
@@ -58,7 +58,7 @@ export class EmployeeListComponent implements OnInit {
             this.cdr.detectChanges();
           },
           error: (err) => {
-            console.error('Error toggling status:', err);
+            // console.error('Error toggling status:', err);
             Swal.fire('Error', 'Failed to update status', 'error');
           }
         });
