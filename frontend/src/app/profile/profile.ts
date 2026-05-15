@@ -64,6 +64,22 @@ export class ProfileComponent implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
 
+    // Email Validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(this.profileData.email)) {
+      this.errorMessage = 'Please enter a valid email address.';
+      this.isSubmitting = false;
+      return;
+    }
+
+    // Mobile Validation
+    const mobileRegex = /^03\d{9}$/;
+    if (!mobileRegex.test(this.profileData.mobile)) {
+      this.errorMessage = 'Mobile number must be 11 digits (e.g., 03XXXXXXXXX).';
+      this.isSubmitting = false;
+      return;
+    }
+
     const payload = {
       name: this.profileData.name,
       email: this.profileData.email,

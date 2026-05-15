@@ -21,27 +21,27 @@ const complaintSchema = new mongoose.Schema({
 
   verificationStatus: {
     type: String,
-    enum: ['Pending', 'Verified', 'Rejected'],
+    enum: ['Pending', 'Verified', 'Reject'],
     default: 'Pending'
   },
 
   resolutionStatus: {
     type: String,
-    enum: ['Open', 'In Progress', 'Resolved', 'Closed'],
+    enum: ['Open', 'Assigned', 'In Progress', 'Closed'],
     default: 'Open'
   },
 
   currentStep: {
     type: String,
     enum: [
-      'Submitted',
-      'Under Verification',
+      'Pending',
+      'Reject',
+      'Verified',
       'Assigned',
       'In Progress',
-      'Resolved',
       'Closed'
     ],
-    default: 'Submitted'
+    default: 'Pending'
   },
 
   assignedDepartment: String,

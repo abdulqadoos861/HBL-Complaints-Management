@@ -100,3 +100,27 @@ exports.getinputFields = async function(req,res){
         });
     }
 }
+
+exports.toggleProductStatus = async function(req, res) {
+  try {
+    const { id } = req.params;
+    const { is_active } = req.body;
+    
+    const product = await productModel.findByIdAndUpdate(id, { is_active }, { new: true });
+    
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    
+    return res.status(200).json({
+      success: true,
+      message: `Product ${is_active ? 'activated' : 'deactivated'} successfully`,
+      product
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Failed to toggle product status",
+      error: error.message
+    });
+  }
+};

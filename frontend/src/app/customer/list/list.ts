@@ -1,15 +1,18 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
+import { CustomerNavbarComponent } from '../navbar/navbar';
 
 @Component({
   selector: 'app-my-complaints',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, CustomerNavbarComponent],
   templateUrl: './list.html',
 })
 export class MyComplaintsComponent implements OnInit {
+  isLoggedIn = false;
   complaints: any[] = [];
   isLoading = true;
   error = '';
@@ -27,7 +30,23 @@ export class MyComplaintsComponent implements OnInit {
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.checkLogin();
     this.fetchMyComplaints();
+  }
+
+  checkLogin() {
+    this.http.get<any>('http://localhost:3000/api/profile', { withCredentials: true }).subscribe({
+      next: (res) => {
+        if (res.profileData) {
+          this.isLoggedIn = true;
+        }
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isLoggedIn = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   fetchMyComplaints() {
@@ -39,7 +58,12 @@ export class MyComplaintsComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.error = 'Failed to load your complaints.';
+        // 401 = not logged in (public user) — silently show empty list
+        // so the search bar is still usable without authentication
+        if (err.status !== 401) {
+          this.error = 'Failed to load your complaints.';
+        }
+        this.complaints = [];
         this.isLoading = false;
         this.cdr.detectChanges();
       }
@@ -102,9 +126,11 @@ export class MyComplaintsComponent implements OnInit {
   getStatusClass(status: string) {
     switch (status?.toLowerCase()) {
       case 'pending': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-      case 'verified': return 'bg-green-100 text-green-700 border-green-200';
-      case 'resolved': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'verified': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      case 'assigned': return 'bg-indigo-100 text-indigo-700 border-indigo-200';
+      case 'in progress': return 'bg-blue-100 text-blue-700 border-blue-200';
       case 'closed': return 'bg-gray-100 text-gray-700 border-gray-200';
+      case 'reject': return 'bg-red-100 text-red-700 border-red-200';
       default: return 'bg-gray-50 text-gray-500 border-gray-100';
     }
   }

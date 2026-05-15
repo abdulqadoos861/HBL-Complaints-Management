@@ -47,10 +47,7 @@ router.post('/verify/:complaintid', isLogedIn, isAdminOrEmployee, complaintContr
 // GET /api/complaints?cnic=&mobile=&email=&name=
 router.get('/complaints', isLogedIn, isAdminOrEmployee, complaintController.getAllComplaints)
 
-// Employee: complaint details page
-// router.get('/complaintDetails/:complaintNumber', isLogedIn, isEmployee, (req, res) => {
-//     res.render('supportD');
-// });
+
 
 // Employee/Admin: get single complaint (JSON)
 router.get('/complaints/:_id', isLogedIn, isAdminOrEmployee, complaintController.getComplaintWithAllData)

@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-admin-navbar',
@@ -10,13 +11,13 @@ import { RouterLink, RouterLinkActive, Router } from '@angular/router';
   styleUrl: './navbar.css'
 })
 export class NavbarComponent {
-  @Output() viewChanged = new EventEmitter<'dashboard' | 'add-employee' | 'complaints'>();
+  @Output() viewChanged = new EventEmitter<'dashboard' | 'add-employee' | 'complaints' | 'manage-employees' | 'add-product' | 'manage-products'>();
   
-  activeView: 'dashboard' | 'add-employee' | 'complaints' = 'dashboard';
+  activeView: 'dashboard' | 'add-employee' | 'complaints' | 'manage-employees' | 'add-product' | 'manage-products' = 'dashboard';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private http: HttpClient) {}
 
-  changeView(view: 'dashboard' | 'add-employee' | 'complaints') {
+  changeView(view: 'dashboard' | 'add-employee' | 'complaints' | 'manage-employees' | 'add-product' | 'manage-products') {
     this.activeView = view;
     this.viewChanged.emit(view);
   }
@@ -26,6 +27,9 @@ export class NavbarComponent {
   }
 
   logout() {
-    console.log('Logging out...');
+    this.http.post('http://localhost:3000/api/logout', {}, { withCredentials: true }).subscribe({
+      next: () => this.router.navigate(['/login']),
+      error: () => this.router.navigate(['/login'])
+    });
   }
 }

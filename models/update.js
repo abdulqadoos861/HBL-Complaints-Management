@@ -10,11 +10,11 @@ const complaintUpdateSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: [
-            "Submitted",
+            "Pending",
+            "Reject",
+            "Verified",
             "Assigned",
             "In Progress",
-            "Pending Customer Response",
-            "Resolved",
             "Closed"
         ],
         required: true

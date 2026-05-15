@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const userModel = require('../models/user')
 
 async function isLogedIn(req, res, next) {
     try {
@@ -10,6 +11,22 @@ async function isLogedIn(req, res, next) {
             return res.render('login');
         } else {
             const data = jwt.verify(token, process.env.JWT_KEY);
+            
+            // Database Check for Deactivation
+            const user = await userModel.findOne({ username: data.username }).lean();
+            if (!user) {
+                res.clearCookie('token');
+                return res.status(401).json({ message: "Account no longer exists" });
+            }
+
+            if (user.isActive === false) {
+                res.clearCookie('token');
+                if (req.originalUrl.startsWith('/api') || req.xhr) {
+                    return res.status(403).json({ message: "Your account has been deactivated" });
+                }
+                return res.render('login', { message: "Your account has been deactivated" });
+            }
+
             req.user = data;
             next();
         }

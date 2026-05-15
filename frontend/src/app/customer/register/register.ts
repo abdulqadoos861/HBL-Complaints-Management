@@ -1,12 +1,14 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
+import { CustomerNavbarComponent } from '../navbar/navbar';
 
 @Component({
   selector: 'app-register-complaint',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, CustomerNavbarComponent],
   templateUrl: './register.html',
 })
 export class RegisterComplaintComponent implements OnInit {
@@ -52,14 +54,20 @@ export class RegisterComplaintComponent implements OnInit {
         }
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Failed to load profile', err)
+      error: (err) => {
+        // 401 = not logged in (public user) — show manual input fields silently
+        if (err.status !== 401) {
+          console.error('Failed to load profile', err);
+        }
+      }
     });
   }
 
   loadProducts() {
     this.http.get<any[]>('http://localhost:3000/api/product/all', { withCredentials: true }).subscribe({
       next: (res) => {
-        this.products = res || [];
+        // Only show active products for registration
+        this.products = (res || []).filter(p => p.is_active !== false);
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Failed to load products', err)
@@ -104,8 +112,19 @@ export class RegisterComplaintComponent implements OnInit {
   }
 
   getFilteredDynamicFields() {
-    if (!this.complaint.category) return this.dynamicFields;
-    return this.dynamicFields.filter(f => !f.categoryName || f.categoryName.trim() === '' || f.categoryName === this.complaint.category);
+    let fields = this.dynamicFields;
+    
+    // Filter by category if selected
+    if (this.complaint.category) {
+      fields = fields.filter(f => !f.categoryName || f.categoryName.trim() === '' || f.categoryName === this.complaint.category);
+    }
+
+    // Filter out fields that clash with static core fields to avoid duplication
+    const coreFields = ['subject', 'description', 'subject line', 'detailed description', 'complaint description'];
+    return fields.filter(f => {
+      const label = (f.label || f.name || '').toLowerCase().trim();
+      return !coreFields.includes(label);
+    });
   }
 
   onFileChange(event: any) {
@@ -126,6 +145,33 @@ export class RegisterComplaintComponent implements OnInit {
       this.errorMessage = 'Please select a Product Type and Category.';
       this.isLoading = false;
       return;
+    }
+
+    // Manual Validation for public users (if not logged in)
+    if (!this.customerData) {
+      // Email Validation
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(this.complaint.email)) {
+        this.errorMessage = 'Please enter a valid email address.';
+        this.isLoading = false;
+        return;
+      }
+
+      // CNIC Validation
+      const cnicRegex = /^(\d{5}-\d{7}-\d{1})|(\d{13})$/;
+      if (!cnicRegex.test(this.complaint.cnic)) {
+        this.errorMessage = 'CNIC must be 13 digits (e.g., 42XXX-XXXXXXX-X).';
+        this.isLoading = false;
+        return;
+      }
+
+      // Mobile Validation
+      const mobileRegex = /^03\d{9}$/;
+      if (!mobileRegex.test(this.complaint.mobile)) {
+        this.errorMessage = 'Mobile number must be 11 digits (e.g., 03XXXXXXXXX).';
+        this.isLoading = false;
+        return;
+      }
     }
 
     const formData = new FormData();

@@ -1,7 +1,7 @@
 <div class="max-w-4xl mx-auto p-6 space-y-12">
   <!-- Add Employee Form Card -->
   <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 animate-fade-in">
-    <div class="bg-gradient-to-r from-[#a91b2c] to-[#7a131f] px-10 py-8 text-white">
+    <div class="bg-gradient-to-r from-[#008269] to-[#005a4b] px-10 py-8 text-white">
       <h2 class="text-3xl font-extrabold tracking-tight">Onboard New Employee</h2>
       <p class="text-white/80 mt-2 font-medium">Enter details to generate secure credentials automatically.</p>
     </div>
@@ -14,7 +14,7 @@
           <div class="relative">
             <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
             <input type="text" name="name" [(ngModel)]="employee.name" (ngModelChange)="onNameChange()" required
-              class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-semibold text-gray-800"
+              class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-semibold text-gray-800"
               placeholder="Abdul Qadoos">
           </div>
         </div>
@@ -26,7 +26,7 @@
           <div class="relative">
             <i class="fas fa-at absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
             <input type="text" name="username" [(ngModel)]="employee.username" required
-              class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-semibold text-gray-800"
+              class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-semibold text-gray-800"
               placeholder=" ">
           </div>
         </div>
@@ -37,7 +37,7 @@
           <div class="relative">
             <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
             <input type="email" name="email" [(ngModel)]="employee.email" required
-              class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-semibold text-gray-800"
+              class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-semibold text-gray-800"
               placeholder=" abc@gmail.com">
           </div>
         </div>
@@ -48,7 +48,7 @@
           <div class="relative">
             <i class="fas fa-building absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
             <select name="department" [(ngModel)]="employee.department" required
-              class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-semibold text-gray-800 appearance-none">
+              class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-semibold text-gray-800 appearance-none">
               <option value="" disabled>Select Department</option>
               <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
             </select>
@@ -61,7 +61,7 @@
           <div class="relative">
             <i class="fas fa-briefcase absolute left-4 top-1/2 -translate-y-1/2 text-gray-300"></i>
             <input type="text" name="designation" [(ngModel)]="employee.designation" required
-              class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-semibold text-gray-800"
+              class="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-semibold text-gray-800"
               placeholder="Senior Support Analyst">
           </div>
         </div>
@@ -69,7 +69,7 @@
 
       <!-- Action Button -->
       <button type="submit" [disabled]="!employeeForm.form.valid || isLoading"
-        class="w-full py-5 bg-[#a91b2c] hover:bg-[#7a131f] text-white rounded-2xl font-black text-lg shadow-xl shadow-[#a91b2c]/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3">
+        class="w-full py-5 bg-[#008269] hover:bg-[#005a4b] text-white rounded-2xl font-black text-lg shadow-xl shadow-[#008269]/20 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3">
         <i *ngIf="isLoading" class="fas fa-circle-notch fa-spin"></i>
         {{ isLoading ? 'Generating Credentials...' : 'Register Employee' }}
       </button>
@@ -85,10 +85,10 @@
       <h3 class="text-xl font-black text-gray-900">Registered Staff</h3>
       <div class="flex items-center gap-4">
         <button (click)="fetchEmployees()"
-          class="p-2 hover:bg-[#a91b2c]/10 text-gray-400 hover:text-[#a91b2c] rounded-lg transition-all active:rotate-180 duration-500">
+          class="p-2 hover:bg-[#008269]/10 text-gray-400 hover:text-[#008269] rounded-lg transition-all active:rotate-180 duration-500">
           <i class="fas fa-sync-alt"></i>
         </button>
-        <span class="px-3 py-1 bg-[#a91b2c]/10 text-[#a91b2c] rounded-full text-xs font-bold">Total: {{
+        <span class="px-3 py-1 bg-[#008269]/10 text-[#008269] rounded-full text-xs font-bold">Total: {{
           employeesList.length }}</span>
       </div>
     </div>
@@ -104,7 +104,7 @@
         </thead>
         <tbody class="divide-y divide-gray-100">
           <tr *ngFor="let emp of employeesList" class="hover:bg-gray-50 transition-colors">
-            <td class="px-8 py-5 font-mono font-bold text-[#a91b2c] text-sm">{{ emp.employee_id }}</td>
+            <td class="px-8 py-5 font-mono font-bold text-[#008269] text-sm">{{ emp.employee_id }}</td>
             <td class="px-8 py-5 font-bold text-gray-800">{{ emp.name }}</td>
             <td class="px-8 py-5">
               <span class="px-3 py-1 bg-gray-100 rounded-lg text-[10px] font-black uppercase text-gray-500">{{
@@ -129,17 +129,15 @@
         <i class="fas fa-check-circle"></i>
       </div>
       <h3 class="text-2xl font-black text-gray-900 mb-2">Registration Successful!</h3>
-      <p class="text-gray-500 font-medium mb-8">Please securely share these credentials with the new employee.</p>
+      <p class="text-gray-500 font-medium mb-8">Credentials have been securely sent to the employee's email address.</p>
 
       <div class="space-y-4 mb-10">
-        <div class="bg-gray-50 p-4 rounded-2xl border-2 border-dashed border-gray-200">
+        <div class="bg-gray-50 p-6 rounded-2xl border-2 border-dashed border-gray-200">
           <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Employee ID</label>
-          <p class="text-xl font-mono font-black text-[#a91b2c] tracking-wider">{{ lastRegisteredEmployee.id }}</p>
+          <p class="text-2xl font-mono font-black text-[#008269] tracking-wider">{{ lastRegisteredEmployee.id }}</p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-2xl border-2 border-dashed border-gray-200">
-          <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Temporary
-            Password</label>
-          <p class="text-xl font-mono font-black text-gray-800 tracking-wider">{{ lastRegisteredEmployee.password }}</p>
+        <div class="p-4 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold border border-emerald-100">
+          <i class="fas fa-paper-plane mr-2"></i> Welcome email with temporary password has been dispatched.
         </div>
       </div>
 

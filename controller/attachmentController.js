@@ -10,14 +10,26 @@ const UPLOAD_DIR = path.join(process.cwd(), 'uploads', 'complaints')
 ensureDir(UPLOAD_DIR)
 
 exports.complaintAttachmentsUploadMiddleware = (multer) => {
-  const upload = multer({
-    dest: UPLOAD_DIR,
-    limits: {
-      fileSize: 10 * 1024 * 1024 // 10MB per file (basic)
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, UPLOAD_DIR);
+    },
+    filename: (req, file, cb) => {
+      // Use original filename with timestamp to avoid name collisions
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const ext = path.extname(file.originalname);
+      cb(null, file.fieldname + '-' + uniqueSuffix + ext);
     }
-  })
+  });
 
-  return upload
+  const upload = multer({
+    storage: storage,
+    limits: {
+      fileSize: 10 * 1024 * 1024 // 10MB per file
+    }
+  });
+
+  return upload;
 }
 
 

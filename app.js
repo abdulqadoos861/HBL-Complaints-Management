@@ -42,7 +42,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads', 'complain
 
 
 app.post('/api/logout',(req,res)=>{
-    res.clearCookie('token')
+    res.clearCookie('token', { path: '/' });
     res.json({ message: "Logged out successfully" })
 })
 

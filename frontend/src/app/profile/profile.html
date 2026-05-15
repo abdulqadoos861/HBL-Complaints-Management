@@ -54,7 +54,7 @@
           
           <div class="space-y-2">
             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Mobile Number</label>
-            <input type="text" name="mobile" [(ngModel)]="profileData.mobile" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none font-bold text-gray-800 transition-all">
+            <input type="text" name="mobile" [(ngModel)]="profileData.mobile" maxlength="11" (input)="profileData.mobile = profileData.mobile.replace(/[^0-9]/g, '')" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none font-bold text-gray-800 transition-all">
           </div>
         </div>
 

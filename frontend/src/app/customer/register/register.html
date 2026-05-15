@@ -1,6 +1,6 @@
-<div class="max-w-4xl mx-auto p-6 animate-fade-in">
+<div class="max-w-4xl mx-auto p-0 animate-fade-in">
   <div class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100">
-    <div class="bg-gradient-to-r from-[#a91b2c] to-[#7a131f] px-10 py-10 text-white">
+    <div class="bg-gradient-to-r from-[#008269] to-[#005a4b] px-10 py-10 text-white">
       <h2 class="text-3xl font-black tracking-tight">Register Complaint</h2>
       <p class="text-white/80 mt-2 font-medium">Please provide accurate details to help us resolve your issue faster.</p>
     </div>
@@ -17,10 +17,10 @@
       </div>
 
       <!-- Auto-filled Badge -->
-      <div *ngIf="customerData" class="p-6 bg-[#a91b2c]/5 border border-[#a91b2c]/20 rounded-2xl flex items-center justify-between">
+      <div *ngIf="customerData" class="p-6 bg-[#008269]/5 border border-[#008269]/20 rounded-2xl flex items-center justify-between">
         <div>
           <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Authenticated Customer</p>
-          <p class="font-bold text-gray-900"><i class="fas fa-user-check text-[#a91b2c] mr-2"></i> {{ customerData.name }}</p>
+          <p class="font-bold text-gray-900"><i class="fas fa-user-check text-[#008269] mr-2"></i> {{ customerData.name }}</p>
         </div>
         <div class="text-right hidden sm:block">
           <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Profile Details</p>
@@ -32,19 +32,19 @@
       <div *ngIf="!customerData" class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div class="space-y-2">
           <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
-          <input type="text" name="name" [(ngModel)]="complaint.name" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-bold text-gray-800" placeholder="Abdul Qadoos Bhatti">
+          <input type="text" name="name" [(ngModel)]="complaint.name" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-bold text-gray-800" placeholder="Abdul Qadoos Bhatti">
         </div>
         <div class="space-y-2">
           <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">CNIC Number</label>
-          <input type="text" name="cnic" [(ngModel)]="complaint.cnic" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-bold text-gray-800" placeholder="XXXXX-XXXXXXX-X">
+          <input type="text" name="cnic" [(ngModel)]="complaint.cnic" maxlength="15" (input)="complaint.cnic = complaint.cnic.replace(/[^0-9-]/g, '')" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-bold text-gray-800" placeholder="XXXXX-XXXXXXX-X">
         </div>
         <div class="space-y-2">
           <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Mobile Number</label>
-          <input type="text" name="mobile" [(ngModel)]="complaint.mobile" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-bold text-gray-800" placeholder="03XX-XXXXXXX">
+          <input type="text" name="mobile" [(ngModel)]="complaint.mobile" maxlength="11" (input)="complaint.mobile = complaint.mobile.replace(/[^0-9]/g, '')" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-bold text-gray-800" placeholder="03XXXXXXXXX">
         </div>
         <div class="space-y-2">
           <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
-          <input type="email" name="email" [(ngModel)]="complaint.email" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-bold text-gray-800" placeholder="abc@gmail.com">
+          <input type="email" name="email" [(ngModel)]="complaint.email" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-bold text-gray-800" placeholder="abc@gmail.com">
         </div>
       </div>
 
@@ -54,14 +54,14 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div class="space-y-2">
           <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Product Type</label>
-          <select name="productType" [(ngModel)]="complaint.productType" (change)="onProductChange()" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none">
+          <select name="productType" [(ngModel)]="complaint.productType" (change)="onProductChange()" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none">
             <option value="" disabled>-- Select Product --</option>
             <option *ngFor="let p of products" [value]="p._id">{{ p.label || p.slug }}</option>
           </select>
         </div>
         <div class="space-y-2">
           <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Category</label>
-          <select name="category" [(ngModel)]="complaint.category" [disabled]="!complaint.productType" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none disabled:opacity-50">
+          <select name="category" [(ngModel)]="complaint.category" [disabled]="!complaint.productType" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none disabled:opacity-50">
             <option value="" disabled>-- Select Category --</option>
             <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
           </select>
@@ -70,7 +70,7 @@
 
       <!-- Dynamic Fields -->
       <div *ngIf="complaint.productType && getFilteredDynamicFields().length > 0" class="p-8 bg-gray-50 rounded-3xl border border-gray-100 animate-fade-in space-y-6">
-        <h3 class="text-sm font-black uppercase tracking-widest text-[#a91b2c] flex items-center gap-2">
+        <h3 class="text-sm font-black uppercase tracking-widest text-[#008269] flex items-center gap-2">
           <i class="fas fa-list-alt"></i> Required Details
         </h3>
         <p class="text-xs text-gray-500 font-bold mb-4">Fields shown depend on your selected product and category.</p>
@@ -84,7 +84,7 @@
               [(ngModel)]="dynamicData[field.name]"
               [placeholder]="field.placeholder || ''"
               [required]="field.required"
-              class="w-full px-6 py-4 bg-white border-2 border-transparent rounded-2xl focus:border-[#a91b2c] outline-none transition-all font-bold text-gray-700 min-h-[100px]"
+              class="w-full px-6 py-4 bg-white border-2 border-transparent rounded-2xl focus:border-[#008269] outline-none transition-all font-bold text-gray-700 min-h-[100px]"
             ></textarea>
 
             <input *ngIf="field.type?.toLowerCase() !== 'textarea'"
@@ -93,7 +93,7 @@
               [(ngModel)]="dynamicData[field.name]"
               [placeholder]="field.placeholder || ''"
               [required]="field.required"
-              class="w-full px-6 py-4 bg-white border-2 border-transparent rounded-2xl focus:border-[#a91b2c] outline-none transition-all font-bold text-gray-800"
+              class="w-full px-6 py-4 bg-white border-2 border-transparent rounded-2xl focus:border-[#008269] outline-none transition-all font-bold text-gray-800"
             >
           </div>
         </div>
@@ -104,18 +104,18 @@
       <!-- Subject & Description -->
       <div class="space-y-2">
         <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Subject</label>
-        <input type="text" name="subject" [(ngModel)]="complaint.subject" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-bold text-gray-800" placeholder="Briefly describe the issue">
+        <input type="text" name="subject" [(ngModel)]="complaint.subject" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-bold text-gray-800" placeholder="Briefly describe the issue">
       </div>
       <div class="space-y-2">
         <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Detailed Description</label>
-        <textarea name="description" [(ngModel)]="complaint.description" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#a91b2c] focus:bg-white outline-none transition-all font-bold text-gray-700 min-h-[150px]" placeholder="Tell us exactly what happened..."></textarea>
+        <textarea name="description" [(ngModel)]="complaint.description" required class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none transition-all font-bold text-gray-700 min-h-[150px]" placeholder="Tell us exactly what happened..."></textarea>
       </div>
 
       <!-- File Upload -->
-      <div class="p-6 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 hover:border-[#a91b2c] transition-colors group">
+      <div class="p-6 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 hover:border-[#008269] transition-colors group">
         <label class="flex flex-col items-center justify-center cursor-pointer">
-          <i class="fas fa-cloud-upload-alt text-3xl text-gray-300 group-hover:text-[#a91b2c] transition-colors mb-3"></i>
-          <span class="text-sm font-black text-gray-600 group-hover:text-[#a91b2c] transition-colors">Attach Supporting Documents</span>
+          <i class="fas fa-cloud-upload-alt text-3xl text-gray-300 group-hover:text-[#008269] transition-colors mb-3"></i>
+          <span class="text-sm font-black text-gray-600 group-hover:text-[#008269] transition-colors">Attach Supporting Documents</span>
           <span class="text-xs font-bold text-gray-400 mt-1">(Images, PDFs, Docs - Max 5 files)</span>
           <input type="file" multiple (change)="onFileChange($event)" class="hidden">
         </label>
@@ -123,17 +123,16 @@
           <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Selected Files:</p>
           <ul class="text-xs font-bold text-gray-600 space-y-1">
             <li *ngFor="let file of selectedFiles" class="flex items-center gap-2">
-              <i class="fas fa-file-alt text-[#a91b2c]"></i> {{ file.name }}
+              <i class="fas fa-file-alt text-[#008269]"></i> {{ file.name }}
             </li>
           </ul>
         </div>
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" [disabled]="!complaintForm.valid || isLoading" class="w-full py-5 bg-[#a91b2c] hover:bg-[#7a131f] text-white rounded-2xl font-black text-lg shadow-xl shadow-[#a91b2c]/20 transition-all active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-3">
+      <button type="submit" [disabled]="!complaintForm.valid || isLoading" class="w-full py-5 bg-[#008269] hover:bg-[#005a4b] text-white rounded-2xl font-black text-lg shadow-xl shadow-[#008269]/20 transition-all active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-3">
         <i *ngIf="isLoading" class="fas fa-spinner fa-spin"></i>
         {{ isLoading ? 'Registering Complaint...' : 'Submit Complaint' }}
       </button>
     </form>
-  </div>
 </div>

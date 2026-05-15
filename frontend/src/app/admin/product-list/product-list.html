@@ -1,0 +1,65 @@
+<div class="space-y-8 animate-fade-in pb-16">
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-3xl font-black text-gray-900 tracking-tight">Product Catalog</h2>
+      <p class="text-gray-400 font-bold text-sm mt-1 uppercase tracking-widest">Active & Deactivated Banking Products</p>
+    </div>
+    <div class="bg-[#008269]/10 px-4 py-2 rounded-2xl border border-[#008269]/20">
+      <span class="text-[10px] font-black text-[#008269] uppercase tracking-widest">Total Products: {{ products.length }}</span>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex flex-col items-center justify-center p-20 space-y-4">
+    <div class="w-12 h-12 border-4 border-[#008269]/20 border-t-[#008269] rounded-full animate-spin"></div>
+    <p class="text-gray-400 font-bold text-xs animate-pulse uppercase tracking-widest">Fetching Products...</p>
+  </div>
+
+  <!-- Product Grid -->
+  <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let prod of products" class="bg-white rounded-[2rem] shadow-xl overflow-hidden border border-gray-100 hover:border-[#008269]/30 transition-all group">
+      <div class="p-8">
+        <div class="flex items-start justify-between mb-6">
+          <div class="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-[#008269] text-2xl group-hover:bg-[#008269] group-hover:text-white transition-all shadow-sm">
+            <i class="fas fa-cube"></i>
+          </div>
+          <div [class]="prod.is_active ? 'bg-green-50 text-green-600 border-green-100' : 'bg-red-50 text-red-600 border-red-100'" class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border">
+            {{ prod.is_active ? 'Available' : 'Deactivated' }}
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <h3 class="text-xl font-black text-gray-900">{{ prod.label }}</h3>
+          <p class="text-[10px] font-mono font-black text-[#008269] tracking-tighter uppercase">{{ prod.slug }}</p>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-gray-50 space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400">
+              <i class="fas fa-tags text-xs"></i>
+            </div>
+            <div class="flex flex-col overflow-hidden">
+              <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Categories</span>
+              <span class="text-xs font-bold text-gray-700 truncate">{{ prod.categories?.join(', ') || 'None' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <button (click)="toggleStatus(prod)" 
+                [class]="prod.is_active ? 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white' : 'bg-[#008269]/10 text-[#008269] hover:bg-[#008269] hover:text-white'"
+                class="mt-8 w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-sm">
+          {{ prod.is_active ? 'Deactivate Product' : 'Reactivate Product' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && products.length === 0" class="bg-white rounded-[2.5rem] p-20 text-center shadow-xl">
+    <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center text-gray-200 mx-auto mb-6">
+      <i class="fas fa-cubes text-4xl"></i>
+    </div>
+    <h3 class="text-2xl font-black text-gray-900 mb-2">No Products Configured</h3>
+    <p class="text-gray-400 font-bold max-w-md mx-auto italic">Start by adding banking products from the Product Engineering section.</p>
+  </div>
+</div>

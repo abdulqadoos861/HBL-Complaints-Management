@@ -5,6 +5,9 @@ import { AddEmployeeComponent } from './add-employee/add-employee';
 import { ComplaintsComponent } from './complaints/complaints';
 import { AdminHomeComponent } from './home/home';
 import { ViewComplaintComponent } from './view-complaint/view-complaint';
+import { EmployeeListComponent } from './employee-list/employee-list';
+import { AddProductComponent } from './add-product/add-product';
+import { ProductListComponent } from './product-list/product-list';
 
 @Component({
   selector: 'app-admin',
@@ -15,16 +18,19 @@ import { ViewComplaintComponent } from './view-complaint/view-complaint';
     AddEmployeeComponent, 
     ComplaintsComponent, 
     AdminHomeComponent,
-    ViewComplaintComponent
+    ViewComplaintComponent,
+    EmployeeListComponent,
+    AddProductComponent,
+    ProductListComponent
   ],
   templateUrl: './admin.html',
   styleUrl: './admin.css',
 })
 export class AdminComponent {
-  currentView: 'dashboard' | 'add-employee' | 'complaints' | 'view-details' = 'dashboard';
+  currentView: 'dashboard' | 'add-employee' | 'complaints' | 'view-details' | 'manage-employees' | 'add-product' | 'manage-products' = 'dashboard';
   selectedComplaintId: string = '';
 
-  setView(view: 'dashboard' | 'add-employee' | 'complaints' | 'view-details') {
+  setView(view: 'dashboard' | 'add-employee' | 'complaints' | 'view-details' | 'manage-employees' | 'add-product' | 'manage-products') {
     this.currentView = view;
   }
 

@@ -1,15 +1,14 @@
-<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-[radial-gradient(circle_at_top_right,_var(--color-hbl-green)_0%,_transparent_25%),_radial-gradient(circle_at_bottom_left,_var(--color-hbl-dark)_0%,_transparent_25%)]">
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8"
+     style="background: radial-gradient(circle at top right, #00a99740 0%, transparent 35%), radial-gradient(circle at bottom left, #004a4440 0%, transparent 35%), #f3f4f6;">
   
-  <!-- Loading State -->
-  <div *ngIf="isLoading" class="flex flex-col items-center justify-center space-y-4">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-hbl-green"></div>
-    <p class="text-hbl-dark font-medium">Processing...</p>
-  </div>
-
-  <div *ngIf="!isLoading" class="sm:mx-auto sm:w-full sm:max-w-md">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
     <div class="flex justify-center">
-      <div class="h-16 w-16 bg-hbl-green flex items-center justify-center rounded-xl shadow-lg border-2 border-white">
-        <span class="text-white text-3xl font-bold">HBL</span>
+      <div class="h-24 w-24 flex items-center justify-center relative">
+        <img src="/favicon.png" class="h-full" alt="HBL Logo" [class.opacity-50]="isLoading">
+        <!-- Subtle spinner when loading -->
+        <div *ngIf="isLoading" class="absolute inset-0 flex items-center justify-center">
+          <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-hbl-green"></div>
+        </div>
       </div>
     </div>
     <h2 class="mt-6 text-center text-3xl font-extrabold text-hbl-dark">HBL Complaints Portal</h2>

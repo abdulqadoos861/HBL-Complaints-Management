@@ -27,7 +27,26 @@ export class AddEmployeeComponent implements OnInit {
   };
 
   employeesList: any[] = [];
-  departments = ['IT', 'HR', 'Support', 'Operations', 'Finance'];
+  departments = [
+    'IT', 
+    'HR', 
+    'Support', 
+    'Operations', 
+    'Finance', 
+    'Compliance', 
+    'Customer Service', 
+    'Marketing', 
+    'Legal', 
+    'Risk Management', 
+    'Audit', 
+    'Digital Banking', 
+    'Remittance', 
+    'Branch Banking',
+    'Trade Finance',
+    'Corporate Banking',
+    'Retail Banking',
+    'Security'
+  ];
   isLoading = false;
   showSuccessModal = false;
   message = '';
@@ -79,6 +98,16 @@ export class AddEmployeeComponent implements OnInit {
   onSubmit() {
     this.isLoading = true;
     this.message = '';
+    this.isError = false;
+
+    // Email Validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(this.employee.email)) {
+      this.message = 'Please enter a valid email address.';
+      this.isError = true;
+      this.isLoading = false;
+      return;
+    }
     
     const apiUrl = 'http://localhost:3000/api/admin/addemployee';
 

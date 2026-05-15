@@ -1,51 +1,66 @@
-<nav class="sticky top-0 z-50 bg-gradient-to-r from-[#a91b2c] to-[#7a131f] text-white px-6 py-3 shadow-xl">
+<nav class="sticky top-0 z-50 bg-[#008269] text-white px-8 py-4 shadow-[0_4px_20px_rgba(0,130,105,0.2)] border-b border-white/10">
   <div class="max-w-[1400px] mx-auto flex justify-between items-center">
     <!-- Brand -->
-    <div class="flex items-center gap-4 cursor-pointer" (click)="changeView('dashboard')">
-      <img src="https://www.hbl.com/assets/images/hbl-logo.png" alt="HBL Logo" class="h-10 brightness-0 invert">
-      <span class="text-xl font-bold tracking-wider uppercase hidden md:block">Admin Dashboard</span>
+    <div class="flex items-center gap-4 cursor-pointer group" (click)="changeView('dashboard')">
+      <div class="bg-white p-2 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
+        <img src="/favicon.png" alt="HBL Logo" class="h-8 w-8 object-contain">
+      </div>
+      <span class="text-xl font-black tracking-tighter uppercase hidden md:block">Admin<span class="text-white/60 font-medium">Portal</span></span>
     </div>
     
     <!-- Navigation Links -->
-    <div class="hidden lg:flex items-center gap-6">
+    <div class="hidden lg:flex items-center gap-2">
       <button 
         (click)="changeView('dashboard')" 
-        class="px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:bg-white/10 active:scale-95" 
-        [ngClass]="{'bg-white/20 shadow-inner': activeView === 'dashboard'}">
+        class="px-4 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all duration-300 hover:bg-white/10 active:scale-95" 
+        [ngClass]="{'bg-white text-[#008269] shadow-lg': activeView === 'dashboard', 'text-white/80': activeView !== 'dashboard'}">
         Dashboard
       </button>
       <button 
-        (click)="changeView('add-employee')" 
-        class="px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:bg-white/10 active:scale-95" 
-        [ngClass]="{'bg-white/20 shadow-inner': activeView === 'add-employee'}">
-        Add Employee
-      </button>
-      <button 
         (click)="changeView('complaints')" 
-        class="px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:bg-white/10 active:scale-95" 
-        [ngClass]="{'bg-white/20 shadow-inner': activeView === 'complaints'}">
+        class="px-4 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all duration-300 hover:bg-white/10 active:scale-95" 
+        [ngClass]="{'bg-white text-[#008269] shadow-lg': activeView === 'complaints', 'text-white/80': activeView !== 'complaints'}">
         Complaints
       </button>
       <button 
-        (click)="goToProfile()" 
-        class="px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:bg-white/10 active:scale-95">
-        My Profile
+        (click)="changeView('add-product')" 
+        class="px-4 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all duration-300 hover:bg-white/10 active:scale-95" 
+        [ngClass]="{'bg-white text-[#008269] shadow-lg': activeView === 'add-product', 'text-white/80': activeView !== 'add-product'}">
+        Engineering
+      </button>
+      <button 
+        (click)="changeView('manage-products')" 
+        class="px-4 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all duration-300 hover:bg-white/10 active:scale-95" 
+        [ngClass]="{'bg-white text-[#008269] shadow-lg': activeView === 'manage-products', 'text-white/80': activeView !== 'manage-products'}">
+        Products
+      </button>
+      <button 
+        (click)="changeView('add-employee')" 
+        class="px-4 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all duration-300 hover:bg-white/10 active:scale-95" 
+        [ngClass]="{'bg-white text-[#008269] shadow-lg': activeView === 'add-employee', 'text-white/80': activeView !== 'add-employee'}">
+        Onboarding
+      </button>
+      <button 
+        (click)="changeView('manage-employees')" 
+        class="px-4 py-2 rounded-xl font-black text-[11px] uppercase tracking-widest transition-all duration-300 hover:bg-white/10 active:scale-95" 
+        [ngClass]="{'bg-white text-[#008269] shadow-lg': activeView === 'manage-employees', 'text-white/80': activeView !== 'manage-employees'}">
+        Staff
       </button>
     </div>
 
     <!-- Actions -->
     <div class="flex items-center gap-6">
-      <div class="flex items-center gap-3 pr-6 border-r border-white/20">
+      <div class="flex items-center gap-4 pr-6 border-r border-white/20">
+        <button (click)="goToProfile()" class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center hover:bg-white/20 transition-all group">
+          <i class="fas fa-user-circle text-xl"></i>
+        </button>
         <div class="text-right hidden sm:block">
-          <p class="text-sm font-semibold">Admin User</p>
-          <p class="text-xs text-white/70">Super Admin</p>
-        </div>
-        <div class="w-10 h-10 bg-white text-[#a91b2c] rounded-full flex items-center justify-center font-bold shadow-md">
-          A
+          <p class="text-[10px] font-black uppercase tracking-widest leading-none">Admin User</p>
+          <p class="text-[9px] text-white/50 font-bold uppercase tracking-tighter mt-1">Super Authority</p>
         </div>
       </div>
       
-      <button (click)="logout()" class="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/30 font-medium transition-all duration-300 hover:bg-white hover:text-[#a91b2c] hover:border-white active:scale-95" routerLink="/login">
+      <button (click)="logout()" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/30 font-black text-[10px] uppercase tracking-widest transition-all duration-300 hover:bg-red-500 hover:text-white hover:border-red-500 active:scale-95">
         <i class="fas fa-sign-out-alt"></i>
         <span class="hidden sm:inline">Logout</span>
       </button>

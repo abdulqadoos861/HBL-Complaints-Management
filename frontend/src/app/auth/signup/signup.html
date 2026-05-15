@@ -1,8 +1,8 @@
 <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-[radial-gradient(circle_at_top_right,_var(--color-hbl-green)_0%,_transparent_25%),_radial-gradient(circle_at_bottom_left,_var(--color-hbl-dark)_0%,_transparent_25%)]">
   <div class="sm:mx-auto sm:w-full sm:max-w-md">
     <div class="flex justify-center">
-      <div class="h-16 w-16 bg-hbl-green flex items-center justify-center rounded-xl shadow-lg border-2 border-white">
-        <span class="text-white text-3xl font-bold">H</span>
+      <div class="h-20 w-20 flex items-center justify-center">
+        <img src="/favicon.png" class="h-full" alt="HBL Logo">
       </div>
     </div>
     <h2 class="mt-6 text-center text-3xl font-extrabold text-hbl-dark">Join HBL Portal</h2>
@@ -20,7 +20,7 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Email Address</label>
-            <input type="email" [(ngModel)]="email" name="email" placeholder="email@example.com" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-hbl-green focus:border-hbl-green sm:text-sm">
+            <input type="email" [(ngModel)]="email" name="email" placeholder="email@example.com" required class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-hbl-green focus:border-hbl-green sm:text-sm">
           </div>
           
           <!-- Personal Info -->
@@ -30,17 +30,17 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">CNIC Number</label>
-            <input type="text" [(ngModel)]="cnic" name="cnic" placeholder="42xxx-xxxxxxx-x" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-hbl-green focus:border-hbl-green sm:text-sm">
+            <input type="text" [(ngModel)]="cnic" name="cnic" placeholder="42xxx-xxxxxxx-x" maxlength="15" (input)="cnic = cnic.replace(/[^0-9-]/g, '')" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-hbl-green focus:border-hbl-green sm:text-sm">
           </div>
 
           <!-- Account Info -->
           <div>
             <label class="block text-sm font-medium text-gray-700">Mobile Number</label>
-            <input type="text" [(ngModel)]="mobile" name="mobile" placeholder="03xxxxxxxxx" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-hbl-green focus:border-hbl-green sm:text-sm">
+            <input type="text" [(ngModel)]="mobile" name="mobile" placeholder="03xxxxxxxxx" maxlength="11" (input)="mobile = mobile.replace(/[^0-9]/g, '')" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-hbl-green focus:border-hbl-green sm:text-sm">
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700">Account Number</label>
-            <input type="text" [(ngModel)]="accountNumber" name="accountNumber" placeholder="HBL Account #" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-hbl-green focus:border-hbl-green sm:text-sm">
+            <input type="text" [(ngModel)]="accountNumber" name="accountNumber" placeholder="HBL Account #" maxlength="20" (input)="accountNumber = accountNumber.replace(/[^0-9]/g, '')" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-hbl-green focus:border-hbl-green sm:text-sm">
           </div>
 
           <div class="md:col-span-2">

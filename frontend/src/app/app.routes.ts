@@ -7,6 +7,9 @@ import { SupportComponent } from './support/support';
 import { EmployeeComponent } from './employee/employee';
 import { CustomerComponent } from './customer/customer';
 import { ProfileComponent } from './profile/profile';
+import { PublicRegisterComponent } from './public/register/register';
+import { PublicTrackComponent } from './public/track/track';
+import { Index } from './index/index';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -17,5 +20,7 @@ export const routes: Routes = [
   { path: 'employee', component: EmployeeComponent },
   { path: 'customer', component: CustomerComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: '', redirectTo: 'login', pathMatch: 'full' }
+  { path: 'register-complaint', component: PublicRegisterComponent },
+  { path: 'track-complaint', component: PublicTrackComponent },
+  { path: '', component: Index, pathMatch: 'full' }
 ];

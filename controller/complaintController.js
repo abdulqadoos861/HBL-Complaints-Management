@@ -7,41 +7,36 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/user');
 
 async function getcurrentemployee(req){
-   const token = req.cookies.token;
-   if (!token){
-            console.log('no token Exists')
-            return res.render('login')
-        }
+    const token = req.cookies.token;
+    if (!token){
+        console.log('no token Exists')
+        return null;
+    }
     else{
         const data = jwt.verify(token , process.env.JWT_KEY);
-            console.log(data)
-            const username = data.username;
-            const user = await User.findOne({username: username});
-            const cur_employee = await Employee.findOne({user:user._id})
-            if (!cur_employee){
-              console.log("No employee exist");  
-              return ""
-            }
-            else{
-              return curr_employee;
-            }
+        const username = data.username;
+        const user = await User.findOne({username: username});
+        const cur_employee = await Employee.findOne({user:user._id})
+        if (!cur_employee){
+            console.log("No employee exist");  
+            return null;
+        }
+        else{
+            return cur_employee;
+        }
     }
-   
 }
 
 async function getcurrentuser(req){
-  const token = req.cookies.token;
-   if (!token){
-            console.log('no token Exists')
-            return res.render('login')
-        }
+    const token = req.cookies.token;
+    if (!token){
+        console.log('no token Exists')
+        return null;
+    }
     else{
         const data = jwt.verify(token , process.env.JWT_KEY);
-            console.log(data)
-            const username = data.username;
-            console.log(username)
-            return username
-          }
+        return data.username;
+    }
 }
 
 exports.createComplaint = async function(req, res) {
@@ -78,6 +73,16 @@ exports.createComplaint = async function(req, res) {
 
         await complaint.save();
 
+        // Send Confirmation Email (Non-blocking)
+        if (req.body.email) {
+            const { sendMail } = require('../utils/mailer');
+            sendMail(
+                req.body.email,
+                `Complaint Registered: ${complaintNumber}`,
+                `Dear ${req.body.name},\n\nYour complaint has been successfully registered.\nYour Complaint Tracking Number is: ${complaintNumber}\n\nYou can use this number to track the status of your complaint at any time.\n\nRegards,\nHBL Support Team`,
+                `<h3>Complaint Successfully Registered</h3><p>Dear ${req.body.name},</p><p>Your complaint regarding <strong>${req.body.subject}</strong> has been successfully registered.</p><p>Your Complaint Tracking Number is: <strong style="font-size:1.2em;color:#008269;">${complaintNumber}</strong></p><p>You can use this number to track the status of your complaint on our portal.</p><br><p>Regards,<br>HBL Support Team</p>`
+            ).catch(err => console.error("Failed to send complaint confirmation email:", err.message));
+        }
 
         res.status(201).json({
             message: "Complaint registered successfully",
@@ -185,39 +190,46 @@ exports.getAllComplaints = async function (req, res) {
     const User = require('../models/user');
     const Employee = require('../models/employee');
 
-    // Get current employee
-    const user = await User.findOne({ username: req.user.username });
-    const employee = await Employee.findOne({ user: user._id });
-
-    const filter = {}
-    if (cnic) filter.cnic = cnic
-    if (mobile) filter.mobile = mobile
-    if (email) filter.email = email
-    if (name) filter.name = name
-
     // Role-based filtering
-    if (employee) {
+    let filter = {};
+    if (cnic) filter.cnic = cnic;
+    if (mobile) filter.mobile = mobile;
+    if (email) filter.email = email;
+    if (name) filter.name = name;
+
+    if (req.user.role === 'admin') {
+      // Admins can see all complaints (filtered by query params only)
+      console.log('Admin accessing complaints');
+    } else if (req.user.role === 'employee') {
+      const user = await User.findOne({ username: req.user.username });
+      const employee = await Employee.findOne({ user: user._id });
+
+      if (!employee) {
+        console.warn(`Employee profile not found for user: ${req.user.username}`);
+        return res.status(200).json([]); // Return nothing if profile missing
+      }
+
       if (employee.department && employee.department.trim().toLowerCase() === 'support') {
-        // Support only sees unverified complaints by default
+        // Support sees pending/unverified items
         filter.verificationStatus = 'Pending';
       } else {
-        // Others see complaints assigned to them
+        // Regular employees ONLY see complaints assigned to them
         filter.$or = [
           { assignedTo: employee._id },
           { verificationAssignedTo: employee._id },
           { resolutionAssignedTo: employee._id }
         ];
       }
-    } else if (req.user.role === 'admin') {
-        // Admin sees all complaints by default, filter object stays as is (empty or just query params)
-        console.log('Admin accessing all complaints');
+    } else {
+      // Customers or unknown roles see nothing through this endpoint
+      return res.status(200).json([]);
     }
 
-    const complaints = await Complaint.find(filter).sort({ createdAt: -1 }).lean()
-
-    return res.status(200).json(complaints.map(buildComplaintResponse))
+    const complaints = await Complaint.find(filter).sort({ createdAt: -1 }).lean();
+    return res.status(200).json(complaints.map(buildComplaintResponse));
   } catch (err) {
-    return res.status(500).json({ message: 'Failed to get complaints', error: err.message })
+    console.error('Error in getAllComplaints:', err);
+    return res.status(500).json({ message: 'Failed to get complaints', error: err.message });
   }
 }
 
@@ -302,9 +314,8 @@ exports.addcomplaintupdate = async function (req, res) {
         });
     }
 
-    let username =  await getcurrentuser(req)
-    console.log("username is printed bellow")
-    console.log(username)
+    let username = req.user.username;
+    console.log("username:", username);
     
     const userDoc = await User.findOne({ username }).lean();
     if(!userDoc){
@@ -339,10 +350,40 @@ exports.addcomplaintupdate = async function (req, res) {
         return res.status(400).json("An eror occured while adding update.");
     }
 
-    // Also update the main complaint document's current status
-    await Complaint.findByIdAndUpdate(complaintId, { 
-        currentStep: status 
-    });
+    // Also update the main complaint document's current status and resolution state
+    const updateFields = { currentStep: status };
+    if (status === 'Closed') {
+        updateFields.resolutionStatus = 'Closed';
+        updateFields.resolvedAt = new Date();
+        updateFields.resolvedBy = userDoc._id;
+    } else if (status === 'In Progress' || status === 'Assigned') {
+        updateFields.resolutionStatus = status;
+    }
+    
+    await Complaint.findByIdAndUpdate(complaintId, updateFields);
+
+    // Send status update email to customer (Non-blocking)
+    if (existed.email) {
+        const { sendMail } = require('../utils/mailer');
+        const statusLabel = status || 'Updated';
+        const note = resolationnote ? `<p><strong>Note from team:</strong> ${resolationnote}</p>` : '';
+        sendMail(
+            existed.email,
+            `Complaint Update: ${existed.complaintNumber} — Status: ${statusLabel}`,
+            `Dear ${existed.name},\n\nYour complaint (${existed.complaintNumber}) has been updated.\nNew Status: ${statusLabel}\n${resolationnote ? 'Note: ' + resolationnote + '\n' : ''}\nYou can track your complaint on our portal.\n\nRegards,\nHBL Support Team`,
+            `<h3 style="color:#008269;">Complaint Status Updated</h3>
+             <p>Dear ${existed.name},</p>
+             <p>Your complaint <strong>${existed.complaintNumber}</strong> has been updated by our team.</p>
+             <table style="border-collapse:collapse;width:100%;margin:16px 0;">
+               <tr style="background:#f4f4f4;"><td style="padding:8px 12px;font-weight:bold;">Complaint No.</td><td style="padding:8px 12px;">${existed.complaintNumber}</td></tr>
+               <tr><td style="padding:8px 12px;font-weight:bold;">Subject</td><td style="padding:8px 12px;">${existed.subject}</td></tr>
+               <tr style="background:#f4f4f4;"><td style="padding:8px 12px;font-weight:bold;">New Status</td><td style="padding:8px 12px;"><strong style="color:#008269;">${statusLabel}</strong></td></tr>
+             </table>
+             ${note}
+             <p>You can track your complaint on our portal at any time.</p>
+             <br><p>Regards,<br>HBL Support Team</p>`
+        ).catch(err => console.error('Failed to send update email:', err.message));
+    }
 
     return res.status(200).json({
         message : `update added ${update._id}`
@@ -360,7 +401,7 @@ exports.verifyComplaint = async function (req, res) {
       assignedTo,
       priority,
       internalNotes,
-      currentStep: verificationStatus === 'Verified' ? 'Assigned' : 'Closed'
+      currentStep: verificationStatus === 'Verified' ? 'Assigned' : 'Reject'
     };
 
     const updated = await Complaint.findByIdAndUpdate(complaintId, updateData, { new: true });
@@ -376,12 +417,43 @@ exports.verifyComplaint = async function (req, res) {
         complaintId: updated._id,
         status: updated.currentStep,
         updatedBy: userDoc ? userDoc._id : null,
-        previousStatus: 'Submitted',
+        previousStatus: 'Pending',
         resolutionNotes: internalNotes || `Complaint ${verificationStatus} and assigned to ${assignedDepartment}.`
       });
     } catch (updateErr) {
       console.error('Failed to create history record:', updateErr);
-      // We don't block the main response if history fails
+    }
+
+    // Send verification email to customer (Non-blocking)
+    if (updated.email) {
+      const { sendMail } = require('../utils/mailer');
+      const isVerified = verificationStatus === 'Verified';
+      const statusColor = isVerified ? '#008269' : '#a91b2c';
+      const statusLabel = isVerified ? '✅ Verified & Assigned' : '❌ Rejected';
+      const deptLine = isVerified && assignedDepartment
+        ? `<tr style="background:#f4f4f4;"><td style="padding:8px 12px;font-weight:bold;">Assigned Department</td><td style="padding:8px 12px;">${assignedDepartment}</td></tr>`
+        : '';
+      const noteLine = internalNotes
+        ? `<p><strong>Note:</strong> ${internalNotes}</p>`
+        : '';
+
+      sendMail(
+        updated.email,
+        `Complaint ${isVerified ? 'Verified & Assigned' : 'Rejected'}: ${updated.complaintNumber}`,
+        `Dear ${updated.name},\n\nYour complaint (${updated.complaintNumber}) has been ${isVerified ? 'verified and assigned to the ' + assignedDepartment + ' department.' : 'reviewed and unfortunately could not be accepted at this time.'}\n${internalNotes ? 'Note: ' + internalNotes + '\n' : ''}\nYou can track your complaint on our portal.\n\nRegards,\nHBL Support Team`,
+        `<h3 style="color:${statusColor};">Complaint ${isVerified ? 'Verified & Assigned' : 'Rejected'}</h3>
+         <p>Dear ${updated.name},</p>
+         <p>Your complaint has been reviewed by our Support team.</p>
+         <table style="border-collapse:collapse;width:100%;margin:16px 0;">
+           <tr style="background:#f4f4f4;"><td style="padding:8px 12px;font-weight:bold;">Complaint No.</td><td style="padding:8px 12px;">${updated.complaintNumber}</td></tr>
+           <tr><td style="padding:8px 12px;font-weight:bold;">Subject</td><td style="padding:8px 12px;">${updated.subject}</td></tr>
+           <tr style="background:#f4f4f4;"><td style="padding:8px 12px;font-weight:bold;">Decision</td><td style="padding:8px 12px;"><strong style="color:${statusColor};">${statusLabel}</strong></td></tr>
+           ${deptLine}
+         </table>
+         ${noteLine}
+         <p>You can track your complaint on our portal at any time.</p>
+         <br><p>Regards,<br>HBL Support Team</p>`
+      ).catch(err => console.error('Failed to send verification email:', err.message));
     }
 
     return res.status(200).json({
@@ -403,14 +475,14 @@ exports.customerReply = async function (req, res) {
     // Create update record
     await updateModel.create({
       complaintId: complaint._id,
-      status: 'Submitted',
+      status: 'Pending',
       previousStatus: complaint.currentStep,
       resolutionNotes: `CUSTOMER RESPONSE: ${response}`,
       updatedBy: null // Public reply, or we could link to customer user if logged in
     });
 
     // Reset complaint status
-    complaint.currentStep = 'Submitted';
+    complaint.currentStep = 'Pending';
     await complaint.save();
 
     return res.status(200).json({ message: 'Response submitted successfully' });
@@ -421,18 +493,57 @@ exports.customerReply = async function (req, res) {
 
 exports.getMyComplaints = async function (req, res) {
     try {
-        const user = await User.findOne({ username: req.user.username });
-        if (!user) return res.redirect('/login');
+        const user = await User.findOne({ username: req.user.username }).lean();
+        if (!user) return res.status(401).json({ message: 'Unauthorized' });
 
-    const complaints = await Complaint.find({ email: user.email }).sort({ createdAt: -1 }).lean();
-    
-    if (req.originalUrl.startsWith('/api') || req.xhr) {
-      return res.status(200).json(complaints);
-    }
-    
-    res.render('myComplaints', { complaints });
+        const complaints = await Complaint.find({ email: user.email }).sort({ createdAt: -1 }).lean();
+        return res.status(200).json(complaints);
     } catch (e) {
         console.error(e);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({ message: 'Internal Server Error' });
     }
+};
+
+exports.getAdminStats = async function (req, res) {
+  console.log('--- ADMIN DASHBOARD: FETCHING STATS ---');
+  try {
+    const total = await Complaint.countDocuments();
+    const pending = await Complaint.countDocuments({ verificationStatus: 'Pending' });
+    const verified = await Complaint.countDocuments({ verificationStatus: 'Verified' });
+    const rejected = await Complaint.countDocuments({ verificationStatus: 'Reject' });
+    
+    const resolved = await Complaint.countDocuments({ 
+      currentStep: 'Closed' 
+    });
+    const inProgress = await Complaint.countDocuments({ resolutionStatus: 'In Progress' });
+
+    // Recent activity (last 6 updates)
+    const recentUpdates = await updateModel.find()
+      .sort({ updatedAt: -1 })
+      .limit(6)
+      .populate({
+        path: 'complaintId',
+        select: 'complaintNumber subject'
+      })
+      .lean();
+
+    console.log('Stats Result:', { total, pending, verified, resolved, updates: recentUpdates.length });
+
+    return res.status(200).json({
+      total,
+      pending,
+      verified,
+      rejected,
+      resolved,
+      inProgress,
+      recentUpdates
+    });
+  } catch (err) {
+    console.error('CRITICAL: Admin Stats Error:', err);
+    return res.status(500).json({ 
+      message: 'Failed to fetch dashboard stats', 
+      error: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+  }
 };

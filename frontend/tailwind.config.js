@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'hbl-green': '#00a997',
-        'hbl-dark': '#004a44',
-        'hbl-gold': '#c5a059',
+        'hbl-green': '#008269',
+        'hbl-dark': '#005a4b',
+        'hbl-gold': '#ffc107',
       },
     },
   },

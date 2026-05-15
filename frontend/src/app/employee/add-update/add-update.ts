@@ -28,13 +28,11 @@ export class EmployeeAddUpdateComponent implements OnInit {
   availableStatuses: string[] = [];
 
   readonly WORKFLOW: Record<string, string[]> = {
-    'Pending': ['Verified', 'Pending Customer Response', 'Closed'],
-    'Submitted': ['Assigned', 'Pending Customer Response', 'Closed'],
-    'Verified': ['Assigned', 'In Progress', 'Closed'],
-    'Assigned': ['In Progress', 'Resolved', 'Closed'],
-    'In Progress': ['Resolved', 'Pending Customer Response', 'Closed'],
-    'Pending Customer Response': ['Submitted', 'Pending', 'Closed'],
-    'Resolved': ['Closed', 'In Progress'],
+    'Pending': ['Verified', 'Reject', 'Closed'],
+    'Reject': [],
+    'Verified': ['Assigned', 'Closed'],
+    'Assigned': ['In Progress', 'Closed'],
+    'In Progress': ['Closed'],
     'Closed': []
   };
 
@@ -52,7 +50,7 @@ export class EmployeeAddUpdateComponent implements OnInit {
           this.complaint = res.complaint;
           this.updates = res.updates || [];
           
-          const currentStep = res.complaint.currentStep || 'Submitted';
+          const currentStep = res.complaint.currentStep || 'Pending';
           this.updateForm.previousstatus = currentStep;
           this.updateForm.status = currentStep;
 

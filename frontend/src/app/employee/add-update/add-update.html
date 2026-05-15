@@ -1,133 +1,257 @@
-<div class="space-y-8 animate-fade-in pb-10">
+<div class="space-y-10 animate-fade-in pb-16">
   
-  <div class="flex items-center gap-4 mb-6">
-    <button (click)="goBack.emit()" class="w-10 h-10 bg-white rounded-full shadow hover:bg-gray-50 flex items-center justify-center text-gray-500 transition-all">
-      <i class="fas fa-arrow-left"></i>
-    </button>
-    <div>
-      <h2 class="text-3xl font-black text-gray-900">Manage Case</h2>
-      <p class="text-sm font-bold text-[#008269] tracking-widest uppercase">Complaint #{{ complaint?.complaintNumber || complaintId }}</p>
+  <!-- Navigation Bar -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-4">
+    <div class="flex items-center gap-6">
+      <button (click)="goBack.emit()" class="w-14 h-14 bg-white rounded-3xl shadow-xl hover:shadow-2xl hover:bg-gray-50 flex items-center justify-center text-[#008269] transition-all border border-gray-100 group">
+        <i class="fas fa-arrow-left text-xl group-hover:-translate-x-1 transition-transform"></i>
+      </button>
+      <div>
+        <h2 class="text-4xl font-black text-gray-900 tracking-tight">Case Processor</h2>
+        <div class="flex items-center gap-3 mt-2">
+          <span class="px-4 py-1.5 bg-[#008269]/10 text-[#008269] text-[10px] font-black uppercase tracking-widest rounded-full border border-[#008269]/20 shadow-sm">
+            {{ complaint?.currentStep || 'INITIAL' }}
+          </span>
+          <div class="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+          <span class="text-sm font-black text-gray-400 font-mono tracking-tighter">REF: {{ complaint?.complaintNumber || complaintId }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="complaint?.priority" class="flex items-center gap-3 px-6 py-3 bg-red-50 text-red-600 rounded-3xl border border-red-100 shadow-sm">
+      <div class="relative flex h-3 w-3">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+      </div>
+      <span class="text-xs font-black uppercase tracking-widest">{{ complaint.priority }} PRIORITY CASE</span>
     </div>
   </div>
 
-  <div *ngIf="isLoading" class="flex justify-center p-20">
-    <i class="fas fa-spinner fa-spin text-4xl text-[#008269]"></i>
+  <div *ngIf="isLoading" class="flex flex-col items-center justify-center p-32 space-y-6">
+    <div class="w-16 h-16 border-4 border-[#008269]/10 border-t-[#008269] rounded-full animate-spin shadow-2xl"></div>
+    <p class="text-gray-400 font-black text-xs animate-pulse uppercase tracking-[0.3em]">Decoding Secure Case Data</p>
   </div>
 
-  <div *ngIf="!isLoading && complaint" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <div *ngIf="!isLoading && complaint" class="grid grid-cols-1 xl:grid-cols-12 gap-10">
     
-    <!-- Action Panel -->
-    <div class="lg:col-span-2 space-y-8">
-      <div class="bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-[#008269]/20">
-        <div class="bg-gradient-to-r from-[#008269] to-[#004d3e] px-10 py-6 text-white flex justify-between items-center">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-edit text-xl"></i>
-            <span class="text-lg font-black uppercase tracking-widest">Post Progress Update</span>
-          </div>
+    <!-- LEFT COLUMN: Case Intel & Action -->
+    <div class="xl:col-span-8 space-y-10">
+      
+      <!-- Primary Intelligence Card -->
+      <div class="bg-white rounded-[4rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-r from-gray-50 to-white px-12 py-10 border-b border-gray-100">
+          <label class="text-[10px] font-black text-[#008269] uppercase tracking-[0.2em] mb-3 block">CORE SUBJECT</label>
+          <h3 class="text-3xl font-black text-gray-900 leading-tight">{{ complaint.subject }}</h3>
         </div>
-        
-        <div class="p-10 space-y-6">
-          <div class="space-y-2">
-            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">New Workflow Status</label>
-            <select [(ngModel)]="updateForm.status" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none font-bold text-gray-700 transition-all">
-              <option *ngFor="let s of availableStatuses" [value]="s">{{ s }}</option>
-            </select>
+
+        <div class="p-12 space-y-12">
+          <!-- Description Block -->
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <label class="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-3">
+                <div class="w-8 h-8 bg-gray-50 rounded-xl flex items-center justify-center text-[#008269]">
+                  <i class="fas fa-file-invoice"></i>
+                </div>
+                Case Description
+              </label>
+              <span class="text-[10px] font-black text-gray-300">ESTABLISHED: {{ complaint.createdAt | date:'shortDate' }}</span>
+            </div>
+            <div class="bg-gray-50/50 p-10 rounded-[3rem] border-2 border-gray-50 relative group">
+              <i class="fas fa-quote-right absolute top-8 right-8 text-gray-100 text-5xl"></i>
+              <p class="text-gray-700 leading-relaxed font-bold text-xl relative z-10 italic">
+                {{ complaint.description }}
+              </p>
+            </div>
           </div>
 
-          <div class="space-y-2">
-            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Resolution / Progress Notes</label>
-            <textarea [(ngModel)]="updateForm.resolationnote" placeholder="What actions were taken? Is there a solution?" class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none font-medium text-gray-700 min-h-[180px] transition-all"></textarea>
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Attach Files (Max 5)</label>
-            <div class="p-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 hover:border-[#008269] transition-colors relative">
-              <input type="file" multiple (change)="onFileChange($event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-              <div class="text-center pointer-events-none">
-                <i class="fas fa-paperclip text-2xl text-gray-400 mb-2"></i>
-                <p class="text-sm font-bold text-gray-500">Click or drag files here</p>
-                <p class="text-xs text-gray-400 mt-1">{{ selectedFiles.length }} file(s) selected</p>
+          <!-- Dynamic Intel Grid -->
+          <div *ngIf="complaint.details && (complaint.details | json) !== '{}'" class="space-y-6">
+            <label class="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-3">
+              <div class="w-8 h-8 bg-gray-50 rounded-xl flex items-center justify-center text-[#008269]">
+                <i class="fas fa-fingerprint"></i>
+              </div>
+              System Parameters
+            </label>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div *ngFor="let item of complaint.details | keyvalue" class="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                <span class="block text-[9px] font-black text-[#008269] uppercase tracking-widest mb-1">{{ item.key }}</span>
+                <span class="font-black text-gray-800 text-sm tracking-tight">{{ item.value }}</span>
               </div>
             </div>
           </div>
 
-          <button (click)="submitUpdate()" [disabled]="isSubmitting" class="w-full py-5 mt-4 bg-[#008269] hover:bg-[#005f4c] text-white rounded-2xl font-black text-lg shadow-xl shadow-[#008269]/20 transition-all active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-3">
+          <!-- Initial Evidence -->
+          <div *ngIf="complaint.attachments && complaint.attachments.length > 0" class="space-y-6">
+            <label class="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-3">
+              <div class="w-8 h-8 bg-gray-50 rounded-xl flex items-center justify-center text-[#008269]">
+                <i class="fas fa-paperclip"></i>
+              </div>
+              Initial Evidence
+            </label>
+            <div class="flex flex-wrap gap-4">
+              <a *ngFor="let file of complaint.attachments" [href]="'http://localhost:3000/uploads/' + file" target="_blank" class="flex items-center gap-4 px-6 py-4 bg-white border border-gray-100 rounded-[2rem] hover:border-[#008269] hover:bg-emerald-50 transition-all group shadow-sm">
+                <div class="w-10 h-10 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover:bg-[#008269] group-hover:text-white transition-all">
+                  <i class="fas fa-image"></i>
+                </div>
+                <span class="text-xs font-black text-gray-600 group-hover:text-[#008269] truncate max-w-[150px]">{{ file }}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Processor -->
+      <div class="bg-gray-900 rounded-[4rem] shadow-2xl overflow-hidden border-4 border-gray-800 p-12 text-white">
+        <div class="flex items-center gap-6 mb-12">
+          <div class="w-16 h-16 bg-[#008269] rounded-[2rem] flex items-center justify-center text-white text-2xl shadow-2xl">
+            <i class="fas fa-terminal"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-black tracking-tight">Resolution Console</h3>
+            <p class="text-white/40 font-bold text-sm uppercase tracking-widest">Commit updates to case history</p>
+          </div>
+        </div>
+        
+        <div class="space-y-10">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-3">
+              <label class="text-[11px] font-black text-white/30 uppercase tracking-[0.2em] ml-2">TARGET WORKFLOW STATUS</label>
+              <div class="relative group">
+                <select [(ngModel)]="updateForm.status" class="w-full px-8 py-5 bg-white/5 border-2 border-white/10 rounded-[2rem] focus:border-[#008269] focus:bg-white/10 outline-none font-black text-white transition-all appearance-none cursor-pointer">
+                  <option *ngFor="let s of availableStatuses" [value]="s" class="text-gray-900">{{ s }}</option>
+                </select>
+                <i class="fas fa-chevron-down absolute right-8 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#008269]"></i>
+              </div>
+            </div>
+            <div class="space-y-3">
+              <label class="text-[11px] font-black text-white/30 uppercase tracking-[0.2em] ml-2">PREVIOUS STATE</label>
+              <div class="px-8 py-5 bg-white/5 rounded-[2rem] font-black text-white/20 border-2 border-transparent border-dashed italic">
+                {{ updateForm.previousstatus }}
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <label class="text-[11px] font-black text-white/30 uppercase tracking-[0.2em] ml-2">RESOLUTION INTELLIGENCE (NOTES)</label>
+            <textarea [(ngModel)]="updateForm.resolationnote" placeholder="Synthesize resolution findings here..." class="w-full px-8 py-7 bg-white/5 border-2 border-white/10 rounded-[3rem] focus:border-[#008269] focus:bg-white/10 outline-none font-bold text-white min-h-[180px] transition-all resize-none placeholder-white/10"></textarea>
+          </div>
+
+          <div class="space-y-3">
+            <label class="text-[11px] font-black text-white/30 uppercase tracking-[0.2em] ml-2">SUPPORTING ARTIFACTS</label>
+            <div class="group relative">
+              <div class="p-10 bg-white/5 rounded-[3rem] border-2 border-dashed border-white/10 group-hover:border-[#008269]/50 group-hover:bg-[#008269]/5 transition-all flex flex-col items-center justify-center text-center cursor-pointer">
+                <input type="file" multiple (change)="onFileChange($event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                <div class="w-14 h-14 bg-white/10 rounded-[2rem] shadow-inner flex items-center justify-center text-white/20 group-hover:text-[#008269] transition-colors mb-4">
+                  <i class="fas fa-cloud-arrow-up text-2xl"></i>
+                </div>
+                <p class="text-sm font-black text-white/20 group-hover:text-white transition-all uppercase tracking-widest">Deploy Attachments</p>
+                <p class="text-[9px] text-white/10 mt-2 uppercase tracking-tighter">{{ selectedFiles.length }} artifacts queued</p>
+              </div>
+            </div>
+          </div>
+
+          <button (click)="submitUpdate()" [disabled]="isSubmitting" class="w-full py-6 bg-[#008269] hover:bg-[#005f4c] text-white rounded-[3rem] font-black text-xl shadow-[0_20px_50px_rgba(0,130,105,0.4)] transition-all active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-4">
             <i *ngIf="isSubmitting" class="fas fa-spinner fa-spin"></i>
-            {{ isSubmitting ? 'Posting Update...' : 'Submit Progress Update' }}
+            {{ isSubmitting ? 'SYNCING DATA...' : 'COMMIT RESOLUTION' }}
           </button>
         </div>
       </div>
-
-      <!-- Detail Card -->
-      <div class="bg-white rounded-[2.5rem] shadow-xl p-10 border border-gray-100">
-        <h3 class="text-3xl font-black text-gray-900 mb-2">{{ complaint.subject }}</h3>
-        <p class="text-gray-500 font-medium mb-8">Case Reference: <span class="text-[#008269] font-mono font-bold">{{ complaint.complaintNumber }}</span></p>
-        
-        <div class="bg-gray-50 p-8 rounded-3xl border-l-8 border-[#008269]">
-          <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-3">Customer Complaint Description</label>
-          <p class="text-gray-700 leading-relaxed font-medium italic text-lg">"{{ complaint.description }}"</p>
-        </div>
-      </div>
     </div>
 
-    <!-- Context & Timeline Panel -->
-    <div class="space-y-8">
+    <!-- RIGHT COLUMN: Customer Intel & History -->
+    <div class="xl:col-span-4 space-y-10">
       
-      <!-- Customer Context -->
-      <div class="bg-white rounded-[2rem] shadow-xl p-8 border-t-8 border-[#008269]">
-        <h3 class="text-xl font-black text-gray-900 mb-6">Customer Profile</h3>
-        <div class="space-y-4 text-sm bg-gray-50 p-6 rounded-2xl">
-          <div class="flex flex-col gap-1">
-            <span class="font-black text-gray-400 text-[10px] uppercase tracking-widest">NAME</span>
-            <span class="font-black text-gray-900 text-lg">{{ complaint.name }}</span>
+      <!-- Customer Identity Card -->
+      <div class="bg-white rounded-[4rem] p-10 shadow-xl border border-gray-100">
+        <h4 class="text-xs font-black text-[#008269] uppercase tracking-[0.3em] mb-10 flex items-center gap-3">
+          <i class="fas fa-user-shield"></i> CLIENT PROFILE
+        </h4>
+        <div class="space-y-10">
+          <div class="flex items-center gap-6">
+            <div class="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center text-gray-300 text-3xl font-black shadow-inner">
+              {{ complaint.name.substring(0,1) }}
+            </div>
+            <div>
+              <p class="text-2xl font-black text-gray-900 tracking-tight">{{ complaint.name }}</p>
+              <p class="text-[10px] font-black text-emerald-500 uppercase tracking-widest mt-1">Verified Client</p>
+            </div>
           </div>
-          <hr class="border-gray-200">
-          <div class="flex flex-col gap-1">
-            <span class="font-black text-gray-400 text-[10px] uppercase tracking-widest">MOBILE</span>
-            <span class="font-bold text-gray-900">{{ complaint.mobile }}</span>
-          </div>
-          <hr class="border-gray-200">
-          <div class="flex flex-col gap-1">
-            <span class="font-black text-gray-400 text-[10px] uppercase tracking-widest">CNIC</span>
-            <span class="font-mono font-bold text-[#008269]">{{ complaint.cnic }}</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- Internal Notes -->
-      <div *ngIf="complaint.internalNotes" class="bg-[#008269] rounded-[2rem] p-8 text-white shadow-xl shadow-[#008269]/20">
-        <h3 class="text-lg font-black mb-4 flex items-center gap-2">
-          <i class="fas fa-lock"></i> Verification Notes
-        </h3>
-        <p class="text-sm text-white/90 font-medium leading-relaxed bg-[#004d3e]/30 p-4 rounded-xl">
-          {{ complaint.internalNotes }}
-        </p>
-      </div>
-
-      <!-- Timeline -->
-      <div class="bg-white rounded-[2rem] shadow-xl p-8">
-        <h3 class="text-lg font-black text-gray-900 mb-8">Resolution Timeline</h3>
-        <div class="relative pl-8 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gray-100">
-          <div *ngFor="let u of updates" class="relative">
-            <div class="absolute -left-[30px] w-6 h-6 rounded-full border-4 border-white bg-[#008269] shadow-sm z-10"></div>
-            <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100">
-              <div class="flex justify-between items-start mb-3">
-                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ u.createdAt | date:'shortDate' }}</span>
-                <span class="px-2 py-1 bg-white rounded border text-[9px] font-black text-[#008269] uppercase shadow-sm">{{ u.status }}</span>
+          <div class="space-y-6 pt-10 border-t border-gray-50">
+            <div class="flex items-center gap-6 group">
+              <div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover:bg-[#008269] group-hover:text-white transition-all shadow-sm">
+                <i class="fas fa-phone-alt text-sm"></i>
               </div>
-              <p class="text-sm text-gray-700 font-bold">{{ u.resolutionNotes }}</p>
-              <p class="text-[10px] font-black text-gray-400 mt-3 flex items-center gap-1">
-                <i class="fas fa-user-circle"></i> {{ u.updatedBy?.username }}
-              </p>
-              <!-- Show Attachments if any -->
-              <div *ngIf="u.attachments && u.attachments.length > 0" class="mt-4 pt-3 border-t border-gray-200 flex flex-wrap gap-2">
-                <a *ngFor="let a of u.attachments" [href]="'http://localhost:3000' + a.fileUrl" target="_blank" class="px-3 py-1 bg-[#008269]/10 text-[#008269] rounded-lg text-xs font-bold hover:bg-[#008269]/20 transition-colors flex items-center gap-1">
-                  <i class="fas fa-paperclip"></i> {{ a.fileName }}
-                </a>
+              <div>
+                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">MOBILE</p>
+                <p class="font-black text-gray-800">{{ complaint.mobile }}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-6 group">
+              <div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover:bg-[#008269] group-hover:text-white transition-all shadow-sm">
+                <i class="fas fa-envelope text-sm"></i>
+              </div>
+              <div class="truncate flex-1">
+                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">EMAIL</p>
+                <p class="font-black text-gray-800 truncate" [title]="complaint.email">{{ complaint.email || 'NO EMAIL' }}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-6 group">
+              <div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover:bg-[#008269] group-hover:text-white transition-all shadow-sm">
+                <i class="fas fa-id-card text-sm"></i>
+              </div>
+              <div>
+                <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">IDENTIFICATION</p>
+                <p class="font-mono font-black text-[#008269] text-sm">{{ complaint.cnic }}</p>
               </div>
             </div>
           </div>
-          <div *ngIf="updates.length === 0" class="text-sm font-bold text-gray-400 italic">No updates recorded yet.</div>
+        </div>
+      </div>
+
+      <!-- Live Timeline -->
+      <div class="bg-white rounded-[4rem] shadow-xl p-10 border border-gray-100">
+        <div class="flex items-center justify-between mb-12">
+          <h3 class="text-xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+            <i class="fas fa-stream text-[#008269]"></i> EVENT LOG
+          </h3>
+          <span class="text-[9px] font-black text-gray-300">{{ updates.length }} EVENTS</span>
+        </div>
+        
+        <div class="relative pl-12 space-y-12 before:absolute before:left-[23px] before:top-2 before:bottom-2 before:w-[3px] before:bg-gray-50">
+          <div *ngFor="let u of updates" class="relative group">
+            <!-- Node -->
+            <div class="absolute -left-[42px] top-1 w-7 h-7 rounded-full border-4 border-white bg-[#008269] shadow-lg z-10 transition-transform group-hover:scale-125"></div>
+            
+            <div class="bg-gray-50/50 p-6 rounded-[2rem] border border-transparent hover:border-[#008269]/10 transition-all hover:bg-white hover:shadow-lg">
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-[9px] font-black text-[#008269] uppercase tracking-[0.2em] bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100">{{ u.status }}</span>
+                <span class="text-[9px] font-black text-gray-300">{{ u.createdAt | date:'HH:mm' }}</span>
+              </div>
+              <p class="text-sm text-gray-700 font-bold leading-relaxed mb-6">{{ u.resolutionNotes }}</p>
+              
+              <!-- Logs Attachments -->
+              <div *ngIf="u.attachments && u.attachments.length > 0" class="flex flex-wrap gap-2 mb-6">
+                <a *ngFor="let a of u.attachments" [href]="'http://localhost:3000' + a.fileUrl" target="_blank" class="w-10 h-10 bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-[#008269] hover:bg-[#008269] hover:text-white transition-all shadow-sm group/file" [title]="a.fileName">
+                  <i class="fas fa-file-pdf text-xs"></i>
+                </a>
+              </div>
+
+              <div class="flex items-center gap-3 pt-4 border-t border-gray-100">
+                <div class="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-[10px] text-gray-500 font-black shadow-inner">
+                  {{ u.updatedBy?.username?.substring(0,1) || 'S' }}
+                </div>
+                <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ u.updatedBy?.username || 'System' }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="updates.length === 0" class="flex flex-col items-center justify-center py-20 text-center space-y-6">
+            <div class="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center text-gray-200 shadow-inner">
+              <i class="fas fa-inbox text-4xl"></i>
+            </div>
+            <p class="text-xs font-black text-gray-300 uppercase tracking-widest animate-pulse">Waiting for activity log</p>
+          </div>
         </div>
       </div>
 

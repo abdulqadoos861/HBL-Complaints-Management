@@ -1,18 +1,18 @@
 <div class="max-w-6xl mx-auto p-6 animate-fade-in">
   <!-- Back Button & Header -->
   <div class="flex items-center gap-4 mb-8">
-    <button (click)="goBack()" class="p-3 bg-white shadow-md rounded-full text-gray-600 hover:text-[#a91b2c] transition-all hover:scale-110">
+    <button (click)="goBack()" class="p-3 bg-white shadow-md rounded-full text-gray-600 hover:text-[#008269] transition-all hover:scale-110">
       <i class="fas fa-arrow-left"></i>
     </button>
     <div>
       <h2 class="text-3xl font-extrabold text-gray-900">Complaint Management</h2>
-      <p class="text-gray-500 font-medium">Resolution Workflow for: <span class="text-[#a91b2c] font-mono">{{ complaintData?.complaintNumber }}</span></p>
+      <p class="text-gray-500 font-medium">Resolution Workflow for: <span class="text-[#008269] font-mono">{{ complaintData?.complaintNumber }}</span></p>
     </div>
   </div>
 
   <!-- Loading State -->
   <div *ngIf="isLoading" class="p-20 text-center bg-white rounded-3xl shadow-xl">
-    <i class="fas fa-spinner fa-spin text-4xl text-[#a91b2c] mb-4"></i>
+    <i class="fas fa-spinner fa-spin text-4xl text-[#008269] mb-4"></i>
     <p class="text-gray-500 font-bold">Synchronizing with central database...</p>
   </div>
 
@@ -30,9 +30,9 @@
     <div class="lg:col-span-2 space-y-8">
       
       <!-- Verification & Assignment Section -->
-      <div *ngIf="complaintData.verificationStatus === 'Pending'" class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-[#a91b2c]/20">
+      <div *ngIf="complaintData.currentStep !== 'Closed'" class="bg-white rounded-3xl shadow-xl overflow-hidden border-2 border-[#008269]/20">
         <div class="bg-gray-900 px-8 py-4 text-white flex items-center gap-3">
-          <i class="fas fa-user-check text-[#a91b2c]"></i>
+          <i class="fas fa-user-check text-[#008269]"></i>
           <span class="text-sm font-bold uppercase tracking-widest">Verify & Assign Complaint</span>
         </div>
         <div class="p-8 space-y-6">
@@ -40,15 +40,15 @@
             <!-- Status Select -->
             <div class="space-y-2">
               <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Verification Status</label>
-              <select [(ngModel)]="verifyForm.verificationStatus" class="w-full px-4 py-3 bg-gray-50 border rounded-xl focus:border-[#a91b2c] outline-none font-bold text-gray-700">
+              <select [(ngModel)]="verifyForm.verificationStatus" class="w-full px-4 py-3 bg-gray-50 border rounded-xl focus:border-[#008269] outline-none font-bold text-gray-700">
                 <option value="Verified">Verified (Move to Assignment)</option>
-                <option value="Rejected">Rejected (Close Case)</option>
+                <option value="Reject">Reject (Close Case)</option>
               </select>
             </div>
             <!-- Priority -->
             <div class="space-y-2">
               <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Priority Level</label>
-              <select [(ngModel)]="verifyForm.priority" class="w-full px-4 py-3 bg-gray-50 border rounded-xl focus:border-[#a91b2c] outline-none font-bold text-gray-700">
+              <select [(ngModel)]="verifyForm.priority" class="w-full px-4 py-3 bg-gray-50 border rounded-xl focus:border-[#008269] outline-none font-bold text-gray-700">
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
                 <option value="High">High</option>
@@ -61,7 +61,7 @@
             <!-- Department -->
             <div class="space-y-2">
               <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Assign to Department</label>
-              <select [(ngModel)]="verifyForm.assignedDepartment" (change)="onDepartmentChange()" class="w-full px-4 py-3 bg-gray-50 border rounded-xl focus:border-[#a91b2c] outline-none font-bold text-gray-700">
+              <select [(ngModel)]="verifyForm.assignedDepartment" (change)="onDepartmentChange()" class="w-full px-4 py-3 bg-gray-50 border rounded-xl focus:border-[#008269] outline-none font-bold text-gray-700">
                 <option value="">-- Select Department --</option>
                 <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
               </select>
@@ -69,7 +69,7 @@
             <!-- Employee -->
             <div class="space-y-2">
               <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Assign to Staff Member</label>
-              <select [(ngModel)]="verifyForm.assignedTo" class="w-full px-4 py-3 bg-gray-50 border rounded-xl focus:border-[#a91b2c] outline-none font-bold text-gray-700" [disabled]="!verifyForm.assignedDepartment">
+              <select [(ngModel)]="verifyForm.assignedTo" class="w-full px-4 py-3 bg-gray-50 border rounded-xl focus:border-[#008269] outline-none font-bold text-gray-700" [disabled]="!verifyForm.assignedDepartment">
                 <option value="">-- Select Staff --</option>
                 <option *ngFor="let emp of employees" [value]="emp._id">{{ emp.name }}</option>
               </select>
@@ -78,10 +78,10 @@
 
           <div class="space-y-2 pt-2">
             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Internal Verification Notes</label>
-            <textarea [(ngModel)]="verifyForm.internalNotes" placeholder="Describe the outcome of verification or reason for assignment..." class="w-full px-4 py-3 bg-gray-50 border rounded-xl focus:border-[#a91b2c] outline-none font-medium text-gray-700 min-h-[100px]"></textarea>
+            <textarea [(ngModel)]="verifyForm.internalNotes" placeholder="Describe the outcome of verification or reason for assignment..." class="w-full px-4 py-3 bg-gray-50 border rounded-xl focus:border-[#008269] outline-none font-medium text-gray-700 min-h-[100px]"></textarea>
           </div>
 
-          <button (click)="submitVerification()" [disabled]="isProcessing" class="w-full py-4 bg-[#a91b2c] hover:bg-[#7a131f] text-white rounded-2xl font-black shadow-lg transition-all active:scale-95 disabled:opacity-50">
+          <button (click)="submitVerification()" [disabled]="isProcessing" class="w-full py-4 bg-[#008269] hover:bg-[#005a4b] text-white rounded-2xl font-black shadow-lg transition-all active:scale-95 disabled:opacity-50">
             {{ isProcessing ? 'Processing...' : 'Submit Verification & Update Workflow' }}
           </button>
         </div>
@@ -89,10 +89,10 @@
 
       <!-- Complaint Details (Static Display) -->
       <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
-        <div class="bg-gradient-to-r from-[#a91b2c] to-[#7a131f] px-8 py-4 text-white flex justify-between items-center">
+        <div class="bg-gradient-to-r from-[#008269] to-[#005a4b] px-8 py-4 text-white flex justify-between items-center">
           <span class="text-sm font-bold uppercase tracking-widest">Complaint Overview</span>
-          <span [ngClass]="getStatusClass(complaintData.verificationStatus)" class="px-3 py-1 rounded-full text-[10px] font-black uppercase border-2 border-white/20">
-            {{ complaintData.verificationStatus }}
+          <span [ngClass]="getStatusClass(complaintData.currentStep)" class="px-3 py-1 rounded-full text-[10px] font-black uppercase border-2 border-white/20">
+            {{ complaintData.currentStep }}
           </span>
         </div>
         <div class="p-8">
@@ -122,18 +122,41 @@
               <p class="font-bold text-gray-800 text-sm">{{ complaintData.createdAt | date:'shortDate' }}</p>
             </div>
           </div>
+
+          <!-- Dynamic Input Fields (Product-specific details) -->
+          <div *ngIf="getDetailsKeys().length > 0" class="mt-8 pt-6 border-t border-gray-100">
+            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-4">Additional Details</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div *ngFor="let key of getDetailsKeys()" class="bg-gray-50 px-4 py-3 rounded-xl border border-gray-100">
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{{ key }}</p>
+                <p class="text-sm font-bold text-gray-800">{{ complaintData.details[key] || '—' }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attachments -->
+          <div *ngIf="complaintData.attachments?.length > 0" class="mt-6 pt-6 border-t border-gray-100">
+            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-3">Supporting Attachments</label>
+            <div class="flex flex-wrap gap-3">
+              <a *ngFor="let file of complaintData.attachments"
+                [href]="'http://localhost:3000/uploads/' + file" target="_blank"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-[#008269] hover:text-white rounded-xl text-xs font-bold text-gray-700 transition-all">
+                <i class="fas fa-paperclip"></i> {{ file }}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Update Timeline -->
       <div class="bg-white rounded-3xl shadow-xl p-8">
         <h3 class="text-xl font-black text-gray-900 mb-8 flex items-center gap-3">
-          <i class="fas fa-history text-[#a91b2c]"></i>
+          <i class="fas fa-history text-[#008269]"></i>
           Resolution Timeline
         </h3>
         <div class="relative pl-8 space-y-10 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gray-100">
           <div *ngFor="let update of updates" class="relative">
-            <div class="absolute -left-[30px] w-6 h-6 rounded-full border-4 border-white bg-[#a91b2c] shadow-sm z-10"></div>
+            <div class="absolute -left-[30px] w-6 h-6 rounded-full border-4 border-white bg-[#008269] shadow-sm z-10"></div>
             <div class="bg-gray-50 rounded-2xl p-5 border border-gray-100">
               <div class="flex justify-between items-start mb-2">
                 <span class="text-xs font-black text-gray-400 uppercase tracking-widest">{{ update.createdAt | date:'medium' }}</span>
@@ -141,7 +164,7 @@
               </div>
               <p class="text-sm text-gray-700 font-medium mb-4">{{ update.resolutionNotes }}</p>
               <div class="flex items-center gap-2">
-                <div class="w-6 h-6 bg-[#a91b2c] text-white rounded-full flex items-center justify-center text-[10px] font-bold">
+                <div class="w-6 h-6 bg-[#008269] text-white rounded-full flex items-center justify-center text-[10px] font-bold">
                   {{ update.updatedBy?.username?.[0] | uppercase }}
                 </div>
                 <span class="text-xs font-bold text-gray-500">By {{ update.updatedBy?.username }} ({{ update.updatedBy?.role }})</span>
@@ -156,10 +179,10 @@
     <!-- Right Column: Context Info -->
     <div class="space-y-8">
       <!-- Customer Card -->
-      <div class="bg-white rounded-3xl shadow-xl p-8 border-t-8 border-[#a91b2c]">
+      <div class="bg-white rounded-3xl shadow-xl p-8 border-t-8 border-[#008269]">
         <h3 class="text-lg font-black text-gray-900 mb-6">Customer Profile</h3>
         <div class="flex items-center gap-4 mb-6">
-          <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center text-2xl text-[#a91b2c]">
+          <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center text-2xl text-[#008269]">
             <i class="fas fa-user-circle"></i>
           </div>
           <div>
@@ -189,14 +212,14 @@
         <div class="space-y-6">
           <div>
             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Current Department</label>
-            <div class="px-4 py-2 bg-gray-50 rounded-xl border border-gray-100 text-sm font-bold text-[#a91b2c]">
+            <div class="px-4 py-2 bg-gray-50 rounded-xl border border-gray-100 text-sm font-bold text-[#008269]">
               {{ complaintData.assignedDepartment || 'UNASSIGNED' }}
             </div>
           </div>
           <div *ngIf="complaintData.assignedTo">
             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Current Staff</label>
             <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl">
-              <div class="w-8 h-8 bg-[#a91b2c] text-white rounded-lg flex items-center justify-center text-xs">
+              <div class="w-8 h-8 bg-[#008269] text-white rounded-lg flex items-center justify-center text-xs">
                 <i class="fas fa-user-shield"></i>
               </div>
               <span class="text-sm font-bold text-gray-700">{{ complaintData.assignedTo.name }}</span>

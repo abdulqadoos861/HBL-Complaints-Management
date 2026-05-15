@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -52,7 +53,12 @@ export class LoginComponent implements OnInit {
     this.errorMessage = '';
     
     if (!this.userId || !this.password) {
-      this.errorMessage = 'Please enter both User ID and Password';
+      Swal.fire({
+        icon: 'warning',
+        title: 'Missing Information',
+        text: 'Please enter both User ID and Password',
+        confirmButtonColor: '#008269'
+      });
       return;
     }
 
@@ -61,12 +67,32 @@ export class LoginComponent implements OnInit {
       password: this.password 
     };
 
+    // Show loading alert
+    Swal.fire({
+      title: 'Verifying Credentials',
+      html: 'Please wait while we secure your session...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
     this.http.post<any>('http://localhost:3000/api/login', loginData, { withCredentials: true }).subscribe({
       next: (data) => {
+        Swal.close();
         this.redirectUser(data.role, data.department);
       },
       error: (err) => {
-        this.errorMessage = err.error?.message || 'Login failed. Please check your credentials.';
+        Swal.close();
+        const msg = err.error?.message || 'Login failed. Please check your credentials.';
+        this.errorMessage = msg;
+        
+        Swal.fire({
+          icon: 'error',
+          title: 'Authentication Failed',
+          text: msg,
+          confirmButtonColor: '#008269'
+        });
         console.error('Login error:', err);
       }
     });

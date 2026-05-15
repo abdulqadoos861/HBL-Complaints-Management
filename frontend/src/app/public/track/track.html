@@ -1,0 +1,125 @@
+<!-- Public Navbar (Guest) -->
+<nav class="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 py-4 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+    <div class="logo flex items-center gap-2">
+      <img src="/favicon.png" class="h-8" alt="HBL Logo">
+      <span class="text-2xl font-bold text-hbl-dark">HBL <span class="text-hbl-gold">Complaints</span></span>
+    </div>
+    <ul class="hidden md:flex space-x-8 items-center m-0 p-0">
+      <li><a routerLink="/" class="text-gray-700 font-medium hover:text-hbl-green transition-colors">Home</a></li>
+      <li><a routerLink="/register-complaint" class="text-gray-700 font-medium hover:text-hbl-green transition-colors">New Complaint</a></li>
+      <li>
+        <a routerLink="/login" class="bg-hbl-green hover:bg-hbl-dark text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5">
+          Login
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="pt-24 pb-20 bg-gray-50 min-h-screen">
+  <div class="max-w-5xl mx-auto p-6 animate-fade-in">
+    
+    <!-- Search Interface -->
+    <div *ngIf="!selectedComplaint" class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100">
+      <div class="bg-gradient-to-r from-[#008269] to-[#005a4b] px-10 py-16 text-white text-center relative overflow-hidden">
+        <div class="relative z-10">
+          <h2 class="text-4xl font-black tracking-tight mb-4">Track Your Case</h2>
+          <p class="text-white/80 font-bold text-lg max-w-2xl mx-auto">Enter your unique tracking number to view real-time status and resolution progress.</p>
+        </div>
+        <div class="absolute -left-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+      </div>
+
+      <div class="p-12 space-y-8">
+        <div class="relative max-w-2xl mx-auto">
+          <input type="text" [(ngModel)]="searchTrackingId" (input)="searchTrackingId = searchTrackingId.toUpperCase().replace(/[^A-Z0-9-]/g, '')" placeholder="HBL-XXXXXXX" class="w-full px-8 py-6 bg-gray-50 border-2 border-transparent rounded-[2rem] focus:border-[#008269] focus:bg-white outline-none transition-all font-black text-2xl text-center text-gray-800 tracking-widest placeholder-gray-200">
+        </div>
+        
+        <div class="flex justify-center">
+          <button (click)="trackManual()" [disabled]="!searchTrackingId || isSearching" class="px-12 py-5 bg-[#008269] text-white rounded-[2rem] font-black text-xl shadow-2xl hover:bg-[#005a4b] transform hover:scale-[1.05] active:scale-95 transition-all disabled:opacity-50 shadow-[#008269]/30">
+            <i *ngIf="isSearching" class="fas fa-spinner fa-spin mr-3"></i>
+            TRACK COMPLAINT
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tracking Results -->
+    <div *ngIf="selectedComplaint" class="space-y-8">
+      <!-- Back Button -->
+      <button (click)="selectedComplaint = null" class="flex items-center gap-2 text-gray-400 hover:text-[#008269] font-black uppercase tracking-widest text-xs transition-all">
+        <i class="fas fa-arrow-left"></i>
+        New Search
+      </button>
+
+      <div class="bg-white rounded-[3rem] p-10 shadow-2xl border border-gray-100 relative overflow-hidden">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+          <div>
+            <span class="text-[10px] font-black text-[#008269] uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full mb-3 inline-block">Case File Found</span>
+            <h3 class="text-3xl font-black text-gray-900">{{ selectedComplaint.subject }}</h3>
+          </div>
+          <div [class]="getStatusClass(selectedComplaint.resolutionStatus)" class="px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-widest border-2 shadow-sm">
+            {{ selectedComplaint.resolutionStatus }}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <!-- Timeline -->
+          <div class="lg:col-span-2 space-y-8">
+            <h4 class="text-sm font-black uppercase tracking-widest text-gray-400">Resolution Timeline</h4>
+            
+            <div class="relative pl-8 border-l-4 border-gray-50 space-y-12 py-4">
+              <div *ngFor="let u of updates" class="relative">
+                <div class="absolute -left-[38px] w-6 h-6 rounded-full border-4 border-white bg-[#008269] shadow-sm z-10"></div>
+                <div class="bg-gray-50 rounded-[2rem] p-8 border border-gray-100 shadow-sm hover:shadow-md transition-all">
+                  <div class="flex justify-between items-center mb-4">
+                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ u.createdAt | date:'medium' }}</span>
+                    <span class="px-3 py-1 bg-white rounded-xl text-[10px] font-black text-gray-500 uppercase border shadow-sm">{{ u.status }}</span>
+                  </div>
+                  <p class="text-gray-700 font-bold leading-relaxed">{{ u.resolutionNotes }}</p>
+                  
+                  <div *ngIf="u.attachments && u.attachments.length > 0" class="mt-6 pt-6 border-t border-gray-200 flex flex-wrap gap-2">
+                    <a *ngFor="let a of u.attachments" [href]="'http://localhost:3000' + a.fileUrl" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 rounded-xl text-[#008269] hover:bg-[#008269] hover:text-white transition-all text-[10px] font-black shadow-sm">
+                      <i class="fas fa-paperclip"></i>
+                      <span>{{ a.fileName }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Cards -->
+          <div class="space-y-6">
+            <div class="bg-gray-900 rounded-[2.5rem] p-8 text-white shadow-2xl">
+              <h4 class="text-[10px] font-black uppercase tracking-widest text-[#008269] mb-8">System Summary</h4>
+              <div class="space-y-8">
+                <div>
+                  <p class="text-[10px] font-black text-white/30 uppercase tracking-widest">Tracking Number</p>
+                  <p class="font-mono font-black text-xl text-white mt-1">{{ selectedComplaint.complaintNumber }}</p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-black text-white/30 uppercase tracking-widest">Department</p>
+                  <p class="font-black text-white mt-1">{{ selectedComplaint.assignedDepartment || 'General Support' }}</p>
+                </div>
+                <div>
+                  <p class="text-[10px] font-black text-white/30 uppercase tracking-widest">Priority Level</p>
+                  <p class="font-black text-white mt-1">{{ selectedComplaint.priority || 'Standard' }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-[#008269]/5 rounded-[2.5rem] p-8 border border-[#008269]/10">
+              <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#008269] text-xl mb-6 shadow-sm">
+                <i class="fas fa-headset"></i>
+              </div>
+              <h4 class="text-xl font-black text-gray-900 mb-2">Need Assistance?</h4>
+              <p class="text-sm text-gray-500 font-bold mb-8">Our helpline is available 24/7 for further inquiries.</p>
+              <p class="font-black text-[#008269] text-2xl">111-111-425</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

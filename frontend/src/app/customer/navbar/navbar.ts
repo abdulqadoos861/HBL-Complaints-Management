@@ -10,17 +10,15 @@ import { Router } from '@angular/router';
   template: `
     <nav class="bg-white shadow-lg px-6 py-4 flex justify-between items-center sticky top-0 z-50">
       <div class="flex items-center gap-3">
-        <div class="bg-[#a91b2c] p-2 rounded-lg">
-          <img src="https://www.hbl.com/assets/images/hbl-logo.png" class="h-6 invert brightness-0" alt="HBL">
-        </div>
-        <h1 class="text-xl font-bold text-gray-900 tracking-tight">Customer <span class="text-[#a91b2c]">Care</span></h1>
+        <img src="/favicon.png" class="h-10" alt="HBL">
+        <h1 class="text-xl font-bold text-gray-900 tracking-tight">Customer <span class="text-[#008269]">Care</span></h1>
       </div>
 
       <div class="flex items-center gap-6">
-        <button (click)="changeView('dashboard')" class="text-sm font-bold text-gray-600 hover:text-[#a91b2c] transition-colors">Dashboard</button>
-        <button (click)="changeView('register')" class="text-sm font-bold text-gray-600 hover:text-[#a91b2c] transition-colors">New Complaint</button>
-        <button (click)="changeView('list')" class="text-sm font-bold text-gray-600 hover:text-[#a91b2c] transition-colors">Track Status</button>
-        <button (click)="goToProfile()" class="text-sm font-bold text-gray-600 hover:text-[#a91b2c] transition-colors">My Profile</button>
+        <button (click)="changeView('dashboard')" class="text-sm font-bold text-gray-600 hover:text-[#008269] transition-colors">Dashboard</button>
+        <button (click)="changeView('register')" class="text-sm font-bold text-gray-600 hover:text-[#008269] transition-colors">New Complaint</button>
+        <button (click)="changeView('list')" class="text-sm font-bold text-gray-600 hover:text-[#008269] transition-colors">Track Status</button>
+        <button (click)="goToProfile()" class="text-sm font-bold text-gray-600 hover:text-[#008269] transition-colors">My Profile</button>
         
         <div class="h-6 w-[1px] bg-gray-200"></div>
         

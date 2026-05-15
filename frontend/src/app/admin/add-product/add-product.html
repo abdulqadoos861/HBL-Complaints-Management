@@ -1,0 +1,176 @@
+<div class="max-w-5xl mx-auto p-6 space-y-10 animate-fade-in pb-20">
+  
+  <!-- Product Management Header -->
+  <div class="bg-gradient-to-r from-[#008269] to-[#005a4b] rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
+    <div class="relative z-10">
+      <h2 class="text-4xl font-black tracking-tight">Product Engineering</h2>
+      <p class="text-white/80 mt-2 font-medium">Define new banking products, dynamic fields, and resolution workflows.</p>
+    </div>
+    <div class="absolute -right-10 -bottom-10 opacity-10">
+      <i class="fas fa-cubes text-[200px]"></i>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+    
+    <!-- LEFT: Basic Info & Categories -->
+    <div class="lg:col-span-4 space-y-10">
+      
+      <!-- Basic Configuration -->
+      <div class="bg-white rounded-[3rem] p-8 shadow-xl border border-gray-100">
+        <h3 class="text-xs font-black text-[#008269] uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
+          <i class="fas fa-cog"></i> BASIC CONFIG
+        </h3>
+        
+        <div class="space-y-6">
+          <div class="space-y-2">
+            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Product Label</label>
+            <input type="text" [(ngModel)]="product.label" placeholder="e.g. Credit Cards" 
+              class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none font-bold text-gray-800 transition-all">
+          </div>
+          
+          <div class="space-y-2">
+            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Unique Slug (URL safe)</label>
+            <input type="text" [(ngModel)]="product.slug" placeholder="e.g. credit-cards" 
+              class="w-full px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none font-mono text-xs font-black text-[#008269] transition-all">
+          </div>
+
+          <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
+            <span class="text-xs font-black text-gray-500 uppercase tracking-widest">Active Status</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" [(ngModel)]="product.is_active" class="sr-only peer">
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#008269]"></div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories Management -->
+      <div class="bg-white rounded-[3rem] p-8 shadow-xl border border-gray-100">
+        <h3 class="text-xs font-black text-[#008269] uppercase tracking-[0.3em] mb-8 flex items-center gap-3">
+          <i class="fas fa-tags"></i> CATEGORIES
+        </h3>
+
+        <div class="space-y-6">
+          <div class="flex gap-2">
+            <input type="text" [(ngModel)]="newCategory" (keyup.enter)="addCategory()" placeholder="Add category..." 
+              class="flex-1 px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none font-bold text-gray-800 transition-all">
+            <button (click)="addCategory()" class="w-14 h-14 bg-[#008269] text-white rounded-2xl flex items-center justify-center hover:bg-[#005a4b] transition-all active:scale-95 shadow-lg">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <div *ngFor="let cat of categories; let i = index" class="group flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-xl text-[#008269] text-[10px] font-black uppercase tracking-widest animate-scale-in">
+              {{ cat }}
+              <button (click)="removeCategory(i)" class="hover:text-red-500 transition-colors">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Dynamic Fields & Workflow -->
+    <div class="lg:col-span-8 space-y-10">
+      
+      <!-- Input Fields Engineering -->
+      <div class="bg-white rounded-[3rem] p-10 shadow-xl border border-gray-100">
+        <div class="flex items-center justify-between mb-10">
+          <h3 class="text-xs font-black text-[#008269] uppercase tracking-[0.3em] flex items-center gap-3">
+            <i class="fas fa-list-ul"></i> DYNAMIC FIELDS ENGINE
+          </h3>
+          <span class="px-3 py-1 bg-gray-50 text-[10px] font-black text-gray-400 rounded-full border border-gray-100">{{ inputFields.length }} FIELDS DEFINED</span>
+        </div>
+
+        <div class="space-y-8">
+          <!-- Field Entry Form -->
+          <div class="p-8 bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-200 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-1">
+                <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Field Label</label>
+                <input type="text" [(ngModel)]="newField.label" placeholder="Account Number" class="w-full px-5 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:border-[#008269] font-bold text-gray-700">
+              </div>
+              <div class="space-y-1">
+                <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Field Name (Backend Key)</label>
+                <input type="text" [(ngModel)]="newField.name" placeholder="account_no" class="w-full px-5 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:border-[#008269] font-mono text-xs font-black text-[#008269]">
+              </div>
+              <div class="space-y-1">
+                <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Field Type</label>
+                <select [(ngModel)]="newField.type" class="w-full px-5 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:border-[#008269] font-bold text-gray-700">
+                  <option value="text">Text</option>
+                  <option value="number">Number</option>
+                  <option value="date">Date</option>
+                  <option value="textarea">TextArea</option>
+                </select>
+              </div>
+              <div class="space-y-1">
+                <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Category Mapping (Optional)</label>
+                <select [(ngModel)]="newField.categoryName" class="w-full px-5 py-3 bg-white border border-gray-200 rounded-xl outline-none focus:border-[#008269] font-bold text-gray-700">
+                  <option value="">Global (Show in all)</option>
+                  <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+                </select>
+              </div>
+            </div>
+            
+            <button (click)="addField()" class="w-full py-4 bg-gray-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all shadow-lg active:scale-95">
+              <i class="fas fa-plus-circle mr-2"></i> Register Field Structure
+            </button>
+          </div>
+
+          <!-- Fields List -->
+          <div class="space-y-3">
+            <div *ngFor="let field of inputFields; let i = index" class="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:shadow-md transition-all group animate-scale-in">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center text-gray-300 group-hover:bg-[#008269]/10 group-hover:text-[#008269] transition-all font-black text-xs">
+                  {{ i + 1 }}
+                </div>
+                <div>
+                  <h4 class="font-black text-gray-800 text-sm tracking-tight">{{ field.label }}</h4>
+                  <p class="text-[9px] font-black text-gray-400 uppercase tracking-tighter">Type: {{ field.type }} | Key: {{ field.name }} | {{ field.categoryName || 'Global' }}</p>
+                </div>
+              </div>
+              <button (click)="removeField(i)" class="w-10 h-10 text-gray-300 hover:text-red-500 transition-colors">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLA / Workflow steps -->
+      <div class="bg-white rounded-[3rem] p-10 shadow-xl border border-gray-100">
+        <h3 class="text-xs font-black text-[#008269] uppercase tracking-[0.3em] mb-10 flex items-center gap-3">
+          <i class="fas fa-project-diagram"></i> RESOLUTION WORKFLOW
+        </h3>
+
+        <div class="space-y-8">
+          <div class="flex gap-2">
+            <input type="text" [(ngModel)]="newSlaStep" (keyup.enter)="addSlaStep()" placeholder="Add workflow step..." 
+              class="flex-1 px-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#008269] focus:bg-white outline-none font-bold text-gray-800 transition-all">
+            <button (click)="addSlaStep()" class="w-14 h-14 bg-gray-900 text-white rounded-2xl flex items-center justify-center hover:bg-black transition-all active:scale-95 shadow-lg">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+
+          <div class="relative pl-8 border-l-2 border-gray-100 space-y-4">
+            <div *ngFor="let step of slaSteps; let i = index" class="relative flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100 group animate-slide-in-right">
+              <div class="absolute -left-[41px] w-4 h-4 rounded-full border-4 border-white bg-[#008269] shadow-sm"></div>
+              <span class="text-xs font-black text-gray-700 uppercase tracking-widest">{{ step }}</span>
+              <button (click)="removeSlaStep(i)" class="text-gray-300 hover:text-red-500 transition-colors">
+                <i class="fas fa-times-circle"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Global Submit -->
+      <button (click)="onSubmit()" [disabled]="isLoading" class="w-full py-6 bg-[#008269] hover:bg-[#005a4b] text-white rounded-[2.5rem] font-black text-xl shadow-[0_20px_50px_rgba(0,130,105,0.3)] transition-all active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-4 uppercase tracking-widest">
+        <i *ngIf="isLoading" class="fas fa-cog fa-spin"></i>
+        {{ isLoading ? 'Architecting Product...' : 'Deploy Banking Product' }}
+      </button>
+    </div>
+  </div>
+</div>

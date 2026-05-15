@@ -6,15 +6,19 @@
     <!-- Header (Hidden when viewing details to give more space) -->
     <div *ngIf="currentView !== 'view-details'" class="mb-10 animate-fade-in-down">
       <div class="flex items-center gap-4 mb-2">
-        <div class="w-1.5 h-10 bg-[#a91b2c] rounded-full"></div>
+        <div class="w-1.5 h-10 bg-[#008269] rounded-full"></div>
         <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
           {{ currentView === 'dashboard' ? 'System Administration' : 
-             currentView === 'add-employee' ? 'Employee Management' : 'Complaint Resolution' }}
+             currentView === 'add-employee' ? 'Employee Management' : 
+             currentView === 'add-product' ? 'Product Engineering' : 
+             currentView === 'manage-products' ? 'Product Catalog' : 'Complaint Resolution' }}
         </h1>
       </div>
       <p class="text-gray-500 font-medium ml-5">
         {{ currentView === 'dashboard' ? 'Monitor system performance and updates.' : 
-           currentView === 'add-employee' ? 'Register and manage staff members.' : 'Review and address customer issues.' }}
+           currentView === 'add-employee' ? 'Register and manage staff members.' : 
+           currentView === 'add-product' ? 'Configure banking products and workflows.' : 
+           currentView === 'manage-products' ? 'View and deactivate banking products.' : 'Review and address customer issues.' }}
       </p>
     </div>
 
@@ -35,6 +39,15 @@
         [complaintId]="selectedComplaintId"
         (back)="closeDetails()">
       </app-view-complaint>
+
+      <!-- Employee Management List -->
+      <app-employee-list *ngIf="currentView === 'manage-employees'"></app-employee-list>
+
+      <!-- Add Product -->
+      <app-add-product *ngIf="currentView === 'add-product'"></app-add-product>
+
+      <!-- Manage Products -->
+      <app-product-list *ngIf="currentView === 'manage-products'"></app-product-list>
     </div>
   </main>
 </div>

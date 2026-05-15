@@ -1,16 +1,40 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  template: `
-    <div class="p-10 text-center animate-pulse">
-      <div class="mb-6">
-        <i class="fas fa-tools text-6xl text-gray-300"></i>
-      </div>
-      <h2 class="text-3xl font-bold text-gray-400">Dashboard Content</h2>
-      <p class="text-xl text-gray-400 mt-2">hey content will be uploaded soon...</p>
-    </div>
-  `
+  imports: [CommonModule],
+  templateUrl: './home.html'
 })
-export class AdminHomeComponent {}
+export class AdminHomeComponent implements OnInit, OnDestroy {
+  stats: any = null;
+  refreshInterval: any;
+
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+
+  ngOnInit() {
+    this.fetchStats();
+    // Refresh every 30 seconds
+    this.refreshInterval = setInterval(() => this.fetchStats(), 30000);
+  }
+
+  ngOnDestroy() {
+    if (this.refreshInterval) clearInterval(this.refreshInterval);
+  }
+
+  fetchStats() {
+    console.log('AdminHome: Fetching stats from backend...');
+    this.http.get('http://localhost:3000/api/admin/stats', { withCredentials: true }).subscribe({
+      next: (data) => {
+        console.log('AdminHome: Received stats data:', data);
+        this.stats = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('AdminHome: Error fetching stats:', err);
+      }
+    });
+  }
+}
